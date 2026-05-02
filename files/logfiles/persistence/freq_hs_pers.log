@@ -1,0 +1,28 @@
+nohup: ignoring input
+CUDA available: True
+GPU count: 1
+CONFIG: {'dataset': 'hills', 'representation': 'clip', 'fit': True, 'save': True, 'lr': 0.01, 'initval': 1.0, 'tol': 1e-06, 'maxiter': 5000, 'fitting': 'group', 'cv': 5, 'refnll': 'none', 'featurestouse': 'gpt41', 'mask': True, 'usehillsresp': True, 'useapifreq': True, 'hills': True, 'heineman': True, 'ours': True, 'reglambda': 0, 'regtype': 'none', 'print': True, 'simulate': True, 'printweights': False, 'recovery': False, 'parameterrecovery': False, 'ablation': False, 'RT_analysis': False, 'ARS': False, 'visweights': False, 'simulatewithindividualweights': False, 'BICvsiBIC': False, 'test': True, 'remove_features_that_donot_recover': False, 'remove_weights_that_donot_recover': False, 'ARS_normalisation_type': 'max', 'ARS_segmentation_type': 3}
+NUM. UNIQUE, RESPONSES 350
+HUMAN BLEU SCORE = 0.29533333333333334
+HUMAN BLEU SE = 0.0024135858852331778
+HUMAN BLEU SD = 0.009347777938149384
+138
+--------------------------------FITTING MODELS--------------------------------
+ours Freq_HS_Pers
+LBFGS iterations run: 475
+LBFGS iterations run: 463
+LBFGS iterations run: 474
+LBFGS iterations run: 459
+LBFGS iterations run: 463
+Mean +- SE trainNLL over 5 fold(s) 19188.49375 +- 57.732010941957874
+Sum testNLL over 5 fold(s) 23991.2451171875
+weights for each 5 fold [tensor([ 0.9138, 11.9069,  1.0329], device='cuda:0'), tensor([ 0.8904, 11.2133,  1.5273], device='cuda:0'), tensor([ 0.9102, 11.6053,  1.0128], device='cuda:0'), tensor([ 0.8919, 11.5559,  1.1333], device='cuda:0'), tensor([ 0.9010, 11.9380,  0.6767], device='cuda:0')]
+Freq_HS_Pers completed in 1272.81 seconds
+--------------------------------SIMULATING MODELS--------------------------------
+ours Freq_HS_Pers
+Freq_HS_Pers
+SIM BLEUS MEAN: {'bleu1': 0.7446666666666667, 'bleu2': 0.036000000000000004, 'bleu3': 0.0, 'bleu4': 0.0}
+ours simulations..................
+cat	  dog	  doe	  kangaroo	  fly	  pike	  sponge	  labrador retriever	  horse	  sheep	  wolf	  ferret	  butterfly	  shrimp	  cockroach	  duck	  pony	  peacock	  dodo	  tuna	  rooster	  turkey	  hen	  cardinal	  gull	  seal	  buffalo	  dove	  leopard	  fox	  boar	  quail	  cattle	  akita	  squirrel	  lizard	  fish
+penguin	  bear	  moose	  wolverine	  skunk	  donkey	  human	  wolf	  raven	  nightingale	  chicken	  rooster	  bird	  crow	  hawk	  quail	  kitten	  cardinal	  muskrat	  buffalo	  bulldog	  mouse	  rabbit	  horse	  goat	  goose	  eagle	  sparrow	  amphibian	  cobra	  chick	  fish	  eel	  catfish	  salmon	  bass	  cow	  grizzly	  kangaroo	  hog
+deer	  snake	  hare	  porpoise	  sheep	  gerbil	  bloodhound	  elk	  llama	  lamb	  colt	  kitten	  cub	  crawfish	  boar	  ox	  parakeet	  pig	  alpaca	  bull	  rooster	  rabbit	  cock	  pigeon	  turkey	  hog	  buck	  cardinal	  goose	  seagull	  falcon	  turtle	  tortoise	  porcupine	  cockatiel	  tarantula	  praying mantis	  fly

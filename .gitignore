@@ -1,0 +1,10 @@
+.DS_Store
+__pycache__
+.env*
+./embeddings/*
+./models
+./models/*
+**/keys.json
+category-fluency
+forager/
+other_csvs/

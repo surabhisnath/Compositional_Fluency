@@ -1,0 +1,22 @@
+{
+    "Random": "#a0a0a0",
+
+    "Freq": "#AFD5F1",
+    
+    "HS": "#F7A8AA",
+    "Freq_HS": "#BBB3D8",
+    "WeightedHS": "#F7A8AA",
+    "FreqWeightedHS": "#BBB3D8",
+    "Activity": "#AFD5F1",
+    "WeightedHSActivity": "#BBB3D8",
+    "FreqWeightedHSActivity": "#BBB3D8",
+    
+    "OneCueStaticLocal": "#F7A8AA",
+    "CombinedCueStatic": "#BBB3D8",
+    "CombinedCueDynamicCat": "#BBB3D8",
+
+    "Subcategory": "#F7A8AA",
+    "Freq_Subcategory": "#BBB3D8",
+    "Sim_Subcategory": "#F7A8AA",
+    "Freq_Sim_Subcategory": "#BBB3D8"
+}

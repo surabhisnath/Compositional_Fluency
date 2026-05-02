@@ -1,0 +1,105 @@
+nohup: ignoring input
+cuda
+CUDA available: True
+GPU count: 1
+{'dataset': 'hills', 'representation': 'qwen', 'fit': True, 'lr': 0.01, 'initval': 1.0, 'tol': 1e-06, 'maxiter': 1500, 'plot': True, 'fitting': 'group', 'cv': 5, 'refnll': 'none', 'featurestouse': 'gpt41', 'mask': True, 'usehillsresp': True, 'useapifreq': True, 'hills': True, 'heineman': True, 'ours': True, 'print': True, 'simulate': True, 'recovery': False, 'parameterrecovery': False, 'ablation': False, 'RT_analysis': False, 'test': True}
+num embedding dimensions 1024
+TRUE BLEUS MEAN: {'bleu1': 0.9086666666666667, 'bleu2': 0.242, 'bleu3': 0.030000000000000002, 'bleu4': 0.0006666666666666666}
+LLM BLEUS MEAN: {'bleu1': 0.8273333333333334, 'bleu2': 0.22666666666666666, 'bleu3': 0.02733333333333333, 'bleu4': 0.001}
+--------------------------------FITTING MODELS--------------------------------
+ours Random
+Mean +- SE trainNLL over 5 fold(s) 22216.36328125 +- 66.92568441104444
+Sum testNLL over 5 fold(s) 27770.455078125
+Random completed in 1.54 seconds
+ours Freq
+LBFGS iterations run: 141
+LBFGS iterations run: 111
+LBFGS iterations run: 2
+LBFGS iterations run: 2
+LBFGS iterations run: 1
+Mean +- SE trainNLL over 5 fold(s) 21002.751953125 +- 58.11802875544263
+Sum testNLL over 5 fold(s) 26254.2314453125
+weights for each 5 fold [tensor([0.9547], device='cuda:0'), tensor([0.9331], device='cuda:0'), tensor([0.9331], device='cuda:0'), tensor([0.9331], device='cuda:0'), tensor([0.9331], device='cuda:0')]
+Freq completed in 78.35 seconds
+hills CombinedCueStaticWeightedActivity
+LBFGS iterations run: 1500
+LBFGS iterations run: 1500
+LBFGS iterations run: 1500
+LBFGS iterations run: 1500
+LBFGS iterations run: 1500
+Mean +- SE trainNLL over 5 fold(s) 15981.132421875 +- 88.33072366126744
+Sum testNLL over 5 fold(s) 22000.65234375
+weights for each 5 fold [tensor([ 0.7899, 71.7262, 63.1175,  ...,  3.3338,  4.9048, 13.2416],
+       device='cuda:0'), tensor([ 1.4842, 70.6681,  3.1910,  ..., -0.3669,  4.8816, -8.1869],
+       device='cuda:0'), tensor([ 1.3130, 64.3820, 12.8102,  ..., 25.7794, -3.4564, 10.3136],
+       device='cuda:0'), tensor([  0.9005,  56.6681,  33.7267,  ...,  -0.0816,  -3.2033, -10.1022],
+       device='cuda:0'), tensor([ 0.8435, 67.5998, 14.0088,  ...,  4.5209,  2.8409,  1.3159],
+       device='cuda:0')]
+CombinedCueStaticWeightedActivity completed in 6430.61 seconds
+hills CombinedCueStaticWeighted
+LBFGS iterations run: 1500
+LBFGS iterations run: 1500
+LBFGS iterations run: 204
+LBFGS iterations run: 2
+LBFGS iterations run: 1128
+Mean +- SE trainNLL over 5 fold(s) 16641.8986328125 +- 105.42282984800597
+Sum testNLL over 5 fold(s) 21262.0791015625
+weights for each 5 fold [tensor([  1.0737,  66.6823,  75.7790,  ..., -11.1962, 114.9185, 225.9109],
+       device='cuda:0'), tensor([  1.0458, 121.3219,  55.1071,  ..., -14.5954, 190.6179, 225.3000],
+       device='cuda:0'), tensor([  1.1091, 120.8364,  54.7221,  ..., -14.2734, 190.3607, 224.5107],
+       device='cuda:0'), tensor([  1.1091, 120.8364,  54.7221,  ..., -14.2734, 190.3607, 224.5107],
+       device='cuda:0'), tensor([  1.0650,  91.0652,  57.1318,  ...,  -3.3445, 128.6925, 258.4490],
+       device='cuda:0')]
+CombinedCueStaticWeighted completed in 3612.99 seconds
+hills CombinedCueStatic
+LBFGS iterations run: 445
+LBFGS iterations run: 5
+LBFGS iterations run: 2
+LBFGS iterations run: 2
+LBFGS iterations run: 4
+Mean +- SE trainNLL over 5 fold(s) 19874.83125 +- 48.51427280409806
+Sum testNLL over 5 fold(s) 24844.17138671875
+weights for each 5 fold [tensor([ 0.9707, 13.2038], device='cuda:0'), tensor([ 0.9704, 13.2072], device='cuda:0'), tensor([ 0.9704, 13.2072], device='cuda:0'), tensor([ 0.9704, 13.2073], device='cuda:0'), tensor([ 0.9550, 13.4874], device='cuda:0')]
+CombinedCueStatic completed in 150.83 seconds
+--------------------------------PLOTTING MODELS--------------------------------
+ours Random
+ours Freq
+hills CombinedCueStaticWeightedActivity
+hills CombinedCueStaticWeighted
+hills CombinedCueStatic
+--------------------------------SIMULATING MODELS--------------------------------
+ours Random
+Random
+SIM BLEUS MEAN: {'bleu1': 0.6246666666666666, 'bleu2': 0.008, 'bleu3': 0.0, 'bleu4': 0.0}
+ours simulations..................
+cat	  dog	  woodpecker	  betta	  mountain bear	  clownfish	  polar bear	  bug	  great white shark	  python	  pony	  barracuda	  fox	  rat	  turkey	  flamingo	  angelfish	  dolphin	  toucan	  whale shark	  walrus	  platypus	  eel	  lion	  cobra	  siamese cat	  tilapia	  tiger	  cock	  reindeer	  rattlesnake	  ewe	  cougar	  meerkat	  wolf	  bloodhound	  falcon
+penguin	  bear	  badger	  armadillo	  warthog	  gazelle	  crawfish	  bulldog	  scorpion	  crane	  mule	  meerkat	  dog	  orangutan	  mountain bear	  pelican	  chicken	  deer	  gerbil	  beaver	  bloodhound	  cavy	  aardvark	  angelfish	  canary	  dolphin	  rhino	  parakeet	  starfish	  squirrel	  bunny	  quail	  piranha	  bass	  hornet	  ostrich	  shih tzu	  orca	  newt	  mountain lion
+deer	  snake	  cardinal	  zebra	  swordfish	  potbellied pig	  buffalo	  goat	  moose	  swan	  flea	  cougar	  guppy	  black tailed deer	  hammerhead shark	  anteater	  newt	  wolverine	  giraffe	  narwhal	  prairie dog	  ferret	  cockatoo	  pillbug	  leech	  emu	  eel	  spider monkey	  bullfrog	  liger	  baboon	  cheetah	  blowfish	  whale shark	  rhino	  fisher	  ant	  bonobo
+ours Freq
+Freq
+SIM BLEUS MEAN: {'bleu1': 0.7286666666666667, 'bleu2': 0.015333333333333334, 'bleu3': 0.0, 'bleu4': 0.0}
+ours simulations..................
+cat	  dog	  pony	  buck	  rooster	  bear	  vulture	  squirrel	  mouse	  gorilla	  rabbit	  cock	  horse	  pigeon	  pelican	  chicken	  bat	  frog	  bobcat	  nightingale	  chimpanzee	  betta	  sheep	  eagle	  devil	  tuna	  woodchuck	  black mamba	  seal	  human	  colt	  tilapia	  cardinal	  chihuahua	  ox	  anaconda	  ape
+penguin	  bear	  rhinoceros	  spider	  oyster	  devil	  dingo	  guinea pig	  human	  woodpecker	  ape	  bunny	  cat	  clam	  hen	  gulls	  okapi	  raccoon	  seagull	  otter	  kangaroo	  baboon	  emu	  cricket	  cardinal	  finch	  toad	  cock	  boar	  chicken	  tiger	  starfish	  panda	  canary	  bee	  urchin	  parrot	  squid	  dove	  snail
+deer	  snake	  bass	  armadillo	  bullfrog	  butterfly	  alligator	  gecko	  wombat	  cat	  salmon	  pelican	  pheasant	  hen	  human	  turtle	  cricket	  ape	  oriole	  stallion	  lizards	  bull	  bug	  clam	  panda	  rhino	  insect	  woodpecker	  parrot	  snow leopard	  wasp	  eagle	  pigeon	  cattle	  mountain lion	  gorilla	  wolverine	  hornet
+hills CombinedCueStaticWeightedActivity
+CombinedCueStaticWeightedActivity
+SIM BLEUS MEAN: {'bleu1': 0.9126666666666667, 'bleu2': 0.17200000000000001, 'bleu3': 0.012, 'bleu4': 0.0}
+hills simulations..................
+cat	  dog	  monkey	  zebra	  giraffe	  ferret	  goat	  polar bear	  tiger	  lion	  cow	  pig	  bear	  fish	  bird	  cobra	  moose	  black bear	  sparrow	  penguin	  hippopotamus	  stingray	  shark	  sea lion	  leopard	  parakeet	  barracuda	  dolphin	  lizard	  snake	  jaguar	  horse	  rat	  turtle	  cheetah	  duck	  mouse
+penguin	  bear	  horse	  piglet	  pig	  chicken	  chick	  cow	  snake	  cat	  iguana	  dog	  koala	  elephant	  kiwi	  owl	  duck	  frog	  fish	  lizard	  cub	  tiger	  polar bear	  grey hound	  coyote	  mule	  mouse	  rat	  alligator	  lion	  kangaroo	  bug	  jellyfish	  dolphin	  mako shark	  sloth	  monkey	  bat	  gorilla	  hamster
+deer	  snake	  mouse	  rooster	  seal	  chicken	  cow	  pig	  dog	  bengal tiger	  cat	  squirrel	  buck	  bird	  fish	  shark	  chimpanzee	  lion	  tiger	  cheetah	  elephant	  hippopotamus	  hamster	  prairie dog	  horse	  giraffe	  bat	  whale	  whale shark	  possum	  beaver	  bear	  cockatoo	  penguin	  great white shark	  salmon	  toad	  frog
+hills CombinedCueStaticWeighted
+CombinedCueStaticWeighted
+SIM BLEUS MEAN: {'bleu1': 0.8873333333333334, 'bleu2': 0.14933333333333335, 'bleu3': 0.010666666666666666, 'bleu4': 0.0}
+hills simulations..................
+cat	  dog	  horse	  deer	  aardvark	  penguin	  mole	  squirrel	  flamingo	  goat	  turtle	  beaver	  bison	  polar bear	  otter	  moose	  spider	  butterfly	  bear	  swan	  angelfish	  dolphin	  bird	  fly	  rattlesnake	  reptile	  giraffe	  monkey	  pig	  cow	  chicken	  duck	  rhino	  wildebeest	  snake	  seal	  lemur
+penguin	  bear	  mouse	  giraffe	  monkey	  deer	  squirrel	  hedgehog	  rat	  alligator	  bird	  cat	  dog	  iguana	  muskrat	  catfish	  lizard	  koala	  boar	  human	  clam	  whale	  lion	  snake	  chipmunk	  beaver	  pig	  tiger	  peacock	  crow	  fish	  frog	  mule	  dingo	  dolphin	  fox	  eagle	  pelican	  zebra	  jaguar
+deer	  snake	  frog	  dog	  cat	  mouse	  bird	  butterfly	  bug	  lamb	  bear	  tiger	  panther	  fish	  cow	  chick	  fly	  hummingbird	  flamingo	  orca	  wallaby	  goat	  buffalo	  gecko	  beaver	  walrus	  gerbil	  chicken	  goose	  horse	  gorilla	  monkey	  pig	  raccoon	  crow	  rabbit	  lion	  leopard
+hills CombinedCueStatic
+CombinedCueStatic
+SIM BLEUS MEAN: {'bleu1': 0.7693333333333334, 'bleu2': 0.029333333333333333, 'bleu3': 0.0, 'bleu4': 0.0}
+hills simulations..................
+cat	  dog	  urchin	  ferret	  horse	  fox	  flamingo	  dolphin	  salmon	  clam	  gull	  gerbil	  labrador retriever	  rattlesnake	  elephant	  fly	  trout	  fish	  lion	  lamb	  duck	  hamster	  raven	  mouse	  minnow	  komodo dragon	  penguin	  cow	  hawk	  vulture	  whale	  shark	  beaver	  black bear	  zebra	  buck	  bull
+penguin	  bear	  pig	  raccoon	  turkey	  robin	  finch	  goldfinch	  ant	  ewe	  leech	  poodle	  blue whale	  hedgehog	  puggle	  cock	  bat	  lobster	  hyena	  gulls	  antelope	  canary	  catfish	  parakeet	  terrier	  mule deer	  vulture	  buffalo	  angelfish	  fish	  cow	  insect	  trout	  quail	  fisher	  pony	  cat	  kitten	  ocelot	  elephant
+deer	  snake	  frog	  black widow	  insect	  moth	  walrus	  coyote	  aardvark	  human	  rabbit	  salmon	  monkey	  mouse	  buffalo	  cattle	  goat	  hamster	  lamb	  beaver	  fish	  squirrel	  minnow	  panther	  lion	  mule	  guinea pig	  puppy	  turtle	  hawk	  cat	  dog	  duck	  bear	  rooster	  crane	  grasshopper	  mosquito

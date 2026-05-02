@@ -1,0 +1,22 @@
+{
+    "Random": "Random",
+
+    "Freq": "IF",
+    
+    "HS": "HS",
+    "Freq_HS": "HS + IF",
+    "WeightedHS": "wHS",
+    "FreqWeightedHS": "wHS + IF",
+    "Activity": "wAct",
+    "WeightedHSActivity": "wHS + wAct",
+    "FreqWeightedHSActivity": "wHS + IF + wAct",
+    
+    "OneCueStaticLocal": "CS",
+    "CombinedCueStatic": "CS + IF",
+    "CombinedCueDynamicCat": "CS × Cat + IF",
+
+    "Subcategory": "Cat",
+    "Freq_Subcategory": "Cat + IF",
+    "Sim_Subcategory": "CS + Cat",
+    "Freq_Sim_Subcategory": "CS + Cat + IF"
+}
