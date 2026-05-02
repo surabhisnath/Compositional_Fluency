@@ -16,10 +16,11 @@ The ability to recall semantically connected concepts---be it animals, summer fr
 1. `csvs` contain the csv data files
 2. `figures` contain the final figures used in the paper
 3. `files` contain all config and auxillary files used in the code 
-4. `fits` contain the model fit pickles
-5. `models` contain the model classes and the main runner script
-6. `scripts` contain code for all auxillary analysis and figure plotting
-7. `simulations` contain the model simulation pickles
+4. `fits` contain the fit pickle files
+5. `models` contain the model classes scripts and the main runner script
+6. `plots` contain all plots for each figure, which were used to make the figures
+7. `scripts` contain analysis scripts
+8. `simulations` contain the simulation pickle files
 
 ## Setup
 
@@ -41,8 +42,10 @@ pip install -r requirements.txt
 
 ## Running the code
 
+### NOTE: GPU required
+
 `models/runner.py` is the main runner script for the following analyses. All settings can be set using arguments of `runner.py`.
-Before you being, ensure all models you wish to run are set to 1 in `files/model_to_run`.
+Before you being, ensure all models you wish to run are set to 1 in `files/modeltorun.json`.
 
 1. To replicate Figure 1C: run `scripts/Main/make_TSNE.py`. To plot the histogram of feature categories in Figure 1B: run `scripts/main/plot_feature_categories.py`. All plots will be saved in `plots/Figure1/`
 
@@ -50,7 +53,7 @@ Before you being, ensure all models you wish to run are set to 1 in `files/model
 
 3. To replicate Figure 3: run `scripts/Main/model_NLLs.py` to plot Figure 3B, and run `python scripts/Main/model_BLEUs.py` to plot Figure 3C. `model_nlls.png` and `model_bleus.png` will be saved in `plots/Figure3/`
 
-  To re-run model fitting and simulation: run `python models/runner.py --fit --simulate` (run overnight)
+    To re-run model fitting and simulation: run `python models/runner.py --fit --simulate` (run overnight)
 
 4. To replicate Figure 4: 
 First perform feature ablation by running: `python runner.py --ablation`. Ablations saved as `fits/ablations/ablations_Activity.pk` and `fits/ablations/ablations_HS.pk`
@@ -61,7 +64,6 @@ Run: `python runner.py --RT_analysis`.
 
 6. To replicate Figure 6 plots:
 Run: `python runner.py --ARS`. Plots saved as `plots/Figure6/meanlogRT_transitions.png` and `plots/Figure6/meanprob_transitions.png`
-
 
 ## Citation
 

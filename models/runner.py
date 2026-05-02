@@ -368,7 +368,6 @@ def run(config):
 
         df = pd.DataFrame({"response": responses, "IF": freq_forreg, "wHS": HS_forreg, "wFA": activity_forreg, "logRT": RTs_forreg, "logPrej": logPrej_forreg, "pid": pid, "trial": trials, "patchnum": patchnum, "numwithinpatch": numwithinpatch, "switchornot": switchornot, "cue_transitions": cue_transitions_forreg, "patchnum2": patchnum2_forreg, "numwithinpatch2": numwithinpatch2_forreg})
         df = df[df["logRT"] > -1.6]   # removes RT < 200 ms
-        df.to_csv("../csvs/RT_analysis.csv", index=False)
         non_continuous_cols = ["response", "cue_transitions", "switchornot"]
         continuous_cols = df.columns.difference(non_continuous_cols)
         df[continuous_cols] = (df[continuous_cols] - df[continuous_cols].mean()) / df[continuous_cols].std(ddof=0)
@@ -663,7 +662,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(prog="process_modelling", description="Implements various models of semantic exploration")
 
-    parser.add_argument("--dataset", type=str, default="hills", help="hills or claire or data_LLMs_VF")
+    parser.add_argument("--dataset", type=str, default="hills", help="hills or data_LLMs_VF")
     parser.add_argument("--representation", type=str, default="clip", help="representation to use for embedding responses: clip (768), gtelarge (1024), minilm (348), potion_256 (256), potion_128 (128), potion_64 (64)")
     
     parser.add_argument("--fit", action="store_true", help="fit all models (default: False)")
