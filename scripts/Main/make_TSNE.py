@@ -45,7 +45,7 @@ def make_TSNE(embeddings, responses, clusters=None, show_responses=False, featur
 if __name__ == "__main__":
     featuredict = pk.load(open(f"../../files/features_gpt41.pk", "rb"))
     feature_names = list(next(iter(featuredict.values())).keys())
-    with open("../files/../response_corrections.json", 'r') as f:
+    with open("../../files/response_corrections.json", 'r') as f:
         corrections = json.load(f)
 
     features = {corrections.get(k, k): np.array([1 if values.get(f, "").lower()[:4] == "true" else 0 for f in feature_names]) for k, values in featuredict.items()}

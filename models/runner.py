@@ -84,12 +84,23 @@ def changeweights(weights, i):
     pk.dump(fakeweights, open(f"../fits/parameter_recovery/fakeweights{i}.pk", "wb"))
     return fakeweights
 
-
 def run(config):
     models = {}
+    
+    modelobj = Model(config)                # Initialize shared data and configuration.
 
-    # Initialize shared data and configuration.
-    modelobj = Model(config)
+    ours = Ours(modelobj)
+    ours.create_models()
+    models["ours"] = ours
+    
+    hills = Hills(modelobj)
+    hills.create_models()
+    models["hills"] = hills
+    
+    if config["dataset"] == "hills":        # category cue only defined on animals from Hills dataset
+        heineman = Heineman(modelobj)
+        heineman.create_models()
+        models["heineman"] = heineman
 
     if config["printBLEU"]:
         BLEUs = []
@@ -109,19 +120,6 @@ def run(config):
         print("HUMAN BLEU SE =", se_human_bleu)
         print("HUMAN BLEU SD =", sd_human_bleu)
  
-    ours = Ours(modelobj)
-    ours.create_models()
-    models["ours"] = ours
-    
-    hills = Hills(modelobj)
-    hills.create_models()
-    models["hills"] = hills
-    
-    if config["dataset"] == "hills":        # category cue only defined on animals from Hills dataset
-        heineman = Heineman(modelobj)
-        heineman.create_models()
-        models["heineman"] = heineman
-    
     if config["fit"]:
         print("--------------------------------FITTING MODELS--------------------------------")
         foldername = "model_fits"
@@ -182,40 +180,10 @@ def run(config):
                     models[model_class].models[model_name].simulate(folderinsimulations=foldername)
                     simseqs = models[model_class].models[model_name].simulations
          
-    if config["recovery"]:
-        print("--------------------------------MODEL RECOVERY--------------------------------")
-        foldername = "model_recovery"
-        os.makedirs(f"../fits/{foldername}", exist_ok=True)
-        # for model_class_sim in reversed(list(models)):
-        #     for model_name_sim in reversed(list(models[model_class_sim].models)):
-        for model_class_sim in models:
-            for model_name_sim in models[model_class_sim].models:
-                try:
-                    simseqs = models[model_class_sim].models[model_name_sim].simulations
-                except:
-                    print(f"Loading simulations for {model_name_sim}")
-                    simseqs = pk.load(open(f"../simulations/model_simulations/{model_name_sim.lower()}_simulations_{config["featurestouse"]}.pk", "rb"))
-                
-                for model_class in models:
-                    for model_name in models[model_class].models:
-                        for ssid, ss in enumerate([simseqs[::3], simseqs[1::3], simseqs[2::3]]):
-                            print(model_name_sim, model_name, ssid)
-                            suffix = f"_recovery_{model_name_sim.lower()}_{ssid + 1}"
-                            if not os.path.exists(f"../fits/{foldername}/{model_name.lower()}_fits_{config["featurestouse"]}{suffix}.pk"):
-                                print("Fitting...", model_name_sim, model_name, ssid)
-                                models[model_class].models[model_name].suffix = suffix
-                                models[model_class].models[model_name].custom_splits = models[model_class].models[model_name].split_sequences(ss)
-                                start_time = time.time()
-                                models[model_class].models[model_name].fit(customsequences=True, folderinfits=foldername)
-                                end_time = time.time()
-                                elapsed_time = end_time - start_time
-                                print(f"{model_name} completed in {elapsed_time:.2f} seconds")
-    
     def get_results():
         suffix = "_fulldata"
         try:
             results = pk.load(open(f"../fits/model_fits/{best_model_name.lower()}_fits_{config["featurestouse"]}{suffix}.pk", "rb"))
-            print("Loaded weights on full dataset...")
         except:
             models[best_model_class].models[best_model_name].suffix = suffix
             models[best_model_class].models[best_model_name].custom_splits = [(models[best_model_class].models[best_model_name].sequences, [])]
@@ -239,39 +207,6 @@ def run(config):
         print("learned_weights_freq", learned_weights_freq)
         print("learned_weights_Act", learned_weights_Act)
     
-    if config["parameterrecovery"]:
-        print("--------------------------------PARAMETER RECOVERY--------------------------------")
-        # fit on full data, get weights, simulate, recover
-        # modulate original weights, simulate, recover (repeat 10 times)
-        foldername = "parameter_recovery"
-        os.makedirs(f"../simulations/{foldername}", exist_ok=True)
-        os.makedirs(f"../fits/{foldername}", exist_ok=True)
-        
-        results = get_results()
-        original_weights = results[f"weights_fold1_fulldata"].detach()
-
-        for i in range(11):
-            try:
-                simseqs = pk.load(open(f"../simulations/{foldername}/{best_model_name.lower()}_simulations_gpt41_fakeweights_{i}.pk", "rb"))
-            except:
-                print(f"Modifying weights... {i}")
-                weights = changeweights(original_weights, i)
-                models[best_model_class].models[best_model_name].suffix = f"_fakeweights_{i}"
-                models[best_model_class].models[best_model_name].simulateweights(weights)
-                simseqs = models[best_model_class].models[best_model_name].simulations
-
-            for ssid, ss in enumerate([simseqs[::3], simseqs[1::3], simseqs[2::3]]):
-                suffix2 = f"_paramrecovery_{i}_{ssid + 1}"
-                if not os.path.exists(f"../fits/{foldername}/{best_model_name.lower()}_fits_gpt41{suffix2}.pk"):
-                    print(best_model_class, best_model_name, i, ssid)
-                    models[best_model_class].models[best_model_name].suffix = suffix2
-                    models[best_model_class].models[best_model_name].custom_splits = [(ss, [])]
-                    start_time = time.time()
-                    models[best_model_class].models[best_model_name].fit(customsequences=True, folderinfits=foldername)
-                    end_time = time.time()
-                    elapsed_time = end_time - start_time
-                    print(f"{best_model_name} completed in {elapsed_time:.2f} seconds")
-
     if config["ablation"]:
         print("--------------------------------ABLATION STUDY--------------------------------")
         results = get_results()
@@ -281,8 +216,8 @@ def run(config):
         num_features = models[best_model_class].models[best_model_name].num_features
 
         try:
-            barplot_HS = pk.load(open(f"../files/ablations_HS.pk", "rb"))
-            barplot_Activity = pk.load(open(f"../files/ablations_Activity.pk", "rb"))
+            barplot_HS = pk.load(open(f"../fits/ablations/ablations_HS.pk", "rb"))
+            barplot_Activity = pk.load(open(f"../fits/ablations/ablations_Activity.pk", "rb"))
         except:
             totalnlls = []
             for i in tqdm(range(len(original_weights) + 1)):
@@ -294,8 +229,8 @@ def run(config):
     
             barplot_HS = [totalnlls[i].detach().cpu().item() for i in np.arange(0, 2 + num_features)]
             barplot_Activity = [totalnlls[i].detach().cpu().item() for i in [0, 1] + list(np.arange(2 + num_features, 2 + 2*num_features))]
-            pk.dump(barplot_HS, open(f"../fits/ablations_HS.pk", "wb"))
-            pk.dump(barplot_Activity, open(f"../fits/ablations_Activity.pk", "wb"))
+            pk.dump(barplot_HS, open(f"../fits/ablations/ablations_HS.pk", "wb"))
+            pk.dump(barplot_Activity, open(f"../fits/ablations/ablations_Activity.pk", "wb"))
 
         plt.figure(figsize=(15, 8))
         labels = ["with all weights", "no freq"] + [f"no HS_{feat}" for feat in models[best_model_class].models[best_model_name].feature_names]
@@ -309,7 +244,7 @@ def run(config):
         plt.title(f'Ablation for HS')
         plt.grid(axis='y', linestyle=':', alpha=0.5)
         plt.tight_layout()
-        os.makedirs("../../plots/Figure4/", exist_ok=True)
+        os.makedirs("../plots/Figure4/", exist_ok=True)
         plt.savefig(f"../plots/Figure4/ablation_HS.png", dpi=300, bbox_inches='tight')
         print(f"Saved ../plots/Figure4/ablation_HS.png")
         print("Top 10 important features for HS:")
@@ -337,15 +272,14 @@ def run(config):
         results = get_results()
         weights = results[f"weights_fold1_fulldata"].detach()
         train_nll = sum(results[f"trainNLLs_fulldata"])
-        print(train_nll)
 
         features = models[best_model_class].models[best_model_name].feature_names
         
         weights_HS = weights[1:1+len(features)] 
         weights_Act = weights[1+len(features):]
 
-        delta_ablations_HS = np.array(pk.load(open(f"../files/ablations_HS.pk", "rb"))[2:]) - train_nll
-        delta_ablations_Act = np.array(pk.load(open(f"../files/ablations_Activity.pk", "rb"))[2:]) - train_nll
+        delta_ablations_HS = np.array(pk.load(open(f"../fits/ablations/ablations_HS.pk", "rb"))[2:]) - train_nll
+        delta_ablations_Act = np.array(pk.load(open(f"../fits/ablations/ablations_Activity.pk", "rb"))[2:]) - train_nll
 
         top10_HS_idx = np.argsort(delta_ablations_HS)[-10:]
         top10_Act_idx = np.argsort(delta_ablations_Act)[-10:]
@@ -358,8 +292,10 @@ def run(config):
 
         bax.scatter(delta_ablations_HS, delta_ablations_Act,
                     color="slateblue", alpha=0.6, s=50)
-        print(np.mean(np.array(delta_ablations_HS) <= 20618 - train_nll))
-        print(np.mean(np.array(delta_ablations_Act) <= 20700 - train_nll))
+
+        # print(np.mean(np.array(delta_ablations_HS) <= 20618 - train_nll))
+        # print(np.mean(np.array(delta_ablations_Act) <= 20700 - train_nll))
+
         highlight_idx = [i for i in range(len(features)) if (delta_ablations_HS[i] > 20618 - train_nll and delta_ablations_Act[i] > 20700 - train_nll) or (i in top10_idx)]
 
         colours = []
@@ -377,13 +313,12 @@ def run(config):
         for ax in bax.axs:
             ax.tick_params(axis="both", labelsize=15)
 
-        bax.set_xlabel("HS Ablation Effect", labelpad=35)
-        bax.set_ylabel("Activity Ablation Effect", labelpad=50)
+        bax.set_xlabel("HS Ablation Effect", labelpad=35, fontsize=16)
+        bax.set_ylabel("Activity Ablation Effect", labelpad=50, fontsize=16)
         
         plt.tight_layout()
-        os.makedirs("../../plots/Figure4/", exist_ok=True)
+        os.makedirs("../plots/Figure4/", exist_ok=True)
         plt.savefig("../plots/Figure4/visweights.png", dpi=600)
-        print("Saved")
     
     if config["RT_analysis"]:
         print("--------------------------------RT ANALYSIS--------------------------------")
@@ -438,15 +373,13 @@ def run(config):
         continuous_cols = df.columns.difference(non_continuous_cols)
         df[continuous_cols] = (df[continuous_cols] - df[continuous_cols].mean()) / df[continuous_cols].std(ddof=0)
 
-        df["prev_freq"] = df.groupby("pid")["freq"].shift(1)
-        df["prev_HS"] = df.groupby("pid")["HS"].shift(1)
-        df["prev_activity"] = df.groupby("pid")["activity"].shift(1)
-        df["prev_prev_freq"] = df.groupby("pid")["prev_freq"].shift(1)
-        df["prev_prev_HS"] = df.groupby("pid")["prev_HS"].shift(1)
-        df["prev_prev_activity"] = df.groupby("pid")["prev_activity"].shift(1)
+        df["prev_IF"] = df.groupby("pid")["IF"].shift(1)
+        df["prev_wHS"] = df.groupby("pid")["wHS"].shift(1)
+        df["prev_wFA"] = df.groupby("pid")["wFA"].shift(1)
+        df["prev_prev_IF"] = df.groupby("pid")["prev_IF"].shift(1)
+        df["prev_prev_wHS"] = df.groupby("pid")["prev_wHS"].shift(1)
+        df["prev_prev_wFA"] = df.groupby("pid")["prev_wFA"].shift(1)
         df = df.dropna()
-
-        print(df[continuous_cols].corr(method="pearson"))
 
         # ------------------------ RT Regression Models ---------------------------
         def RT_model(modelname):
@@ -468,14 +401,14 @@ def run(config):
             print(f"BIC: {model.bic:.2f}")
             print()
 
-        RT_model("logRT ~ freq + HS + activity")
-        RT_model("logRT ~ freq + HS + activity + logPrej")
-        RT_model("logRT ~ freq + HS + activity + logPrej + C(cue_transitions)")
+        RT_model("logRT ~ IF + wHS + wFA")
+        RT_model("logRT ~ IF + wHS + wFA + logPrej")
+        RT_model("logRT ~ IF + wHS + wFA + logPrej + C(cue_transitions)")
 
         # supplementary
-        RT_model("logRT ~ freq + HS + activity + logPrej + trial + C(cue_transitions)")
-        RT_model("logRT ~ freq + HS + activity + logPrej + C(switchornot)")
-        RT_model("logRT ~ freq + HS + activity + prev_freq + prev_HS + prev_activity + prev_prev_freq + prev_prev_HS + prev_prev_activity")
+        RT_model("logRT ~ IF + wHS + wFA + logPrej + trial + C(cue_transitions)")
+        RT_model("logRT ~ IF + wHS + wFA + logPrej + C(switchornot)")
+        RT_model("logRT ~ IF + wHS + wFA + prev_IF + prev_wHS + prev_wFA + prev_prev_IF + prev_prev_wHS + prev_prev_wFA")
     
     if config["ARS"]:
         print("--------------------------------ARS--------------------------------")
@@ -486,7 +419,7 @@ def run(config):
 
         def map_type(t):
             """Map 'HS' → 0, 'freq'/'activity'/'global' → 1."""
-            return 0 if t == "HS" else 1
+            return 1 if t == "HS" else 0
 
         def classify_transition(prev_type, curr_type):
             if (prev_type == "global" or prev_type == "freq" or prev_type == "activity") and (curr_type == "global" or curr_type == "freq" or curr_type == "activity"):
@@ -509,10 +442,20 @@ def run(config):
         ######
         example_seq = ["owl", "crocodile", "dog", "cat", "tiger", "lion", "ant", "beetle", "wasp", "shark", "whale", "dolphin", "duck", "swan", "goose", "frog"]
         (_, log_probs, nll, freqlogit, HSlogit, Actlogit, _, _, _, freqeratiomax, HSeratiomax, activityeratiomax, globaleratiomax, freqeratiosum, HSeratiosum, activityeratiosum, globaleratiosum) = models[best_model_class].models[best_model_name].get_logits_maxlogits(example_seq, weights)
-        temp = list(zip(HSeratiomax, freqeratiomax, activityeratiomax, globaleratiomax, HSeratiomax/globaleratiomax, HSlogit, freqlogit, Actlogit, HSeratiosum, freqeratiosum, activityeratiosum))
-        print(len(example_seq), len(temp))
-        for a in temp:
-            print([float(i) for i in a])
+        # temp = list(zip(HSeratiomax, freqeratiomax, activityeratiomax))
+        # for a in temp:
+        #     print([float(i) for i in a])
+        transition_labels = []
+        for hs, freq, act in zip(HSeratiomax, freqeratiomax, activityeratiomax):
+            values = [float(hs), float(freq), float(act)]
+            if np.argmax(values) == 0:
+                transition_labels.append("local")
+            else:
+                transition_labels.append("global")
+        output = ""
+        for i, label in enumerate(transition_labels):
+            output += f" --{label}--> {example_seq[i + 2]}"
+        print(output)
         #####
 
         for sid, seq in enumerate(sequences):
@@ -596,13 +539,12 @@ def run(config):
                 mean_probs[i, j] = np.mean(vals)
                 se_probs[i, j] = np.std(vals, ddof=1) / np.sqrt(len(vals))
 
-        labels = ["local", "global"]
+        labels = ["global", "local"]
         print("\n=== Mean ± SEM log(RT) (max_type) ===")
         df_mean = pd.DataFrame(mean_logrt, index=labels, columns=labels)
         df_se   = pd.DataFrame(se_logrt, index=labels, columns=labels)
         print(df_mean.round(3).astype(str) + " ± " + df_se.round(3).astype(str))
 
-        labels = ["local", "global"]
         print("\n=== Mean ± SEM probs (max_type) ===")
         df_mean = pd.DataFrame(mean_probs, index=labels, columns=labels)
         df_se   = pd.DataFrame(se_probs, index=labels, columns=labels)
@@ -651,10 +593,71 @@ def run(config):
             plt.savefig(save_path, dpi=300)
             plt.close()
         
-        os.makedirs("../../plots/Figure6/", exist_ok=True)
+        os.makedirs("../plots/Figure6/", exist_ok=True)
         plot_transition_heatmap(mean_logrt, se_logrt, title="Mean log(RT) by transition type", cbar_label="Mean log(RT)", save_path="../plots/Figure6/meanlogRT_transitions.png")
         plot_transition_heatmap(mean_probs, se_probs, title="Mean probability by transition type", cbar_label="Mean probability", save_path="../plots/Figure6/meanprob_transitions.png")
     
+    if config["recovery"]:
+        print("--------------------------------MODEL RECOVERY--------------------------------")
+        foldername = "model_recovery"
+        os.makedirs(f"../fits/{foldername}", exist_ok=True)
+        # for model_class_sim in reversed(list(models)):
+        #     for model_name_sim in reversed(list(models[model_class_sim].models)):
+        for model_class_sim in models:
+            for model_name_sim in models[model_class_sim].models:
+                try:
+                    simseqs = models[model_class_sim].models[model_name_sim].simulations
+                except:
+                    print(f"Loading simulations for {model_name_sim}")
+                    simseqs = pk.load(open(f"../simulations/model_simulations/{model_name_sim.lower()}_simulations_{config["featurestouse"]}.pk", "rb"))
+                
+                for model_class in models:
+                    for model_name in models[model_class].models:
+                        for ssid, ss in enumerate([simseqs[::3], simseqs[1::3], simseqs[2::3]]):
+                            print(model_name_sim, model_name, ssid)
+                            suffix = f"_recovery_{model_name_sim.lower()}_{ssid + 1}"
+                            if not os.path.exists(f"../fits/{foldername}/{model_name.lower()}_fits_{config["featurestouse"]}{suffix}.pk"):
+                                print("Fitting...", model_name_sim, model_name, ssid)
+                                models[model_class].models[model_name].suffix = suffix
+                                models[model_class].models[model_name].custom_splits = models[model_class].models[model_name].split_sequences(ss)
+                                start_time = time.time()
+                                models[model_class].models[model_name].fit(customsequences=True, folderinfits=foldername)
+                                end_time = time.time()
+                                elapsed_time = end_time - start_time
+                                print(f"{model_name} completed in {elapsed_time:.2f} seconds")
+
+    if config["parameterrecovery"]:
+        print("--------------------------------PARAMETER RECOVERY--------------------------------")
+        # fit on full data, get weights, simulate, recover
+        # modulate original weights, simulate, recover (repeat 10 times)
+        foldername = "parameter_recovery"
+        os.makedirs(f"../simulations/{foldername}", exist_ok=True)
+        os.makedirs(f"../fits/{foldername}", exist_ok=True)
+        
+        results = get_results()
+        original_weights = results[f"weights_fold1_fulldata"].detach()
+
+        for i in range(11):
+            try:
+                simseqs = pk.load(open(f"../simulations/{foldername}/{best_model_name.lower()}_simulations_gpt41_fakeweights_{i}.pk", "rb"))
+            except:
+                print(f"Modifying weights... {i}")
+                weights = changeweights(original_weights, i)
+                models[best_model_class].models[best_model_name].suffix = f"_fakeweights_{i}"
+                models[best_model_class].models[best_model_name].simulateweights(weights)
+                simseqs = models[best_model_class].models[best_model_name].simulations
+
+            for ssid, ss in enumerate([simseqs[::3], simseqs[1::3], simseqs[2::3]]):
+                suffix2 = f"_paramrecovery_{i}_{ssid + 1}"
+                if not os.path.exists(f"../fits/{foldername}/{best_model_name.lower()}_fits_gpt41{suffix2}.pk"):
+                    print(best_model_class, best_model_name, i, ssid)
+                    models[best_model_class].models[best_model_name].suffix = suffix2
+                    models[best_model_class].models[best_model_name].custom_splits = [(ss, [])]
+                    start_time = time.time()
+                    models[best_model_class].models[best_model_name].fit(customsequences=True, folderinfits=foldername)
+                    end_time = time.time()
+                    elapsed_time = end_time - start_time
+                    print(f"{best_model_name} completed in {elapsed_time:.2f} seconds")
 
 if __name__ == "__main__":
 
@@ -665,8 +668,12 @@ if __name__ == "__main__":
     
     parser.add_argument("--fit", action="store_true", help="fit all models (default: False)")
     parser.add_argument("--simulate", action="store_true", help="simulate all models (default: False)")
-    parser.add_argument("--save", action="store_true", help="save pk files (default: False)")
-    parser.add_argument("--print", action="store_true", help="print all models (default: False)")
+    
+    parser.add_argument("--save", action="store_true", default=True, help="save pk files (default: True)")
+    parser.add_argument("--nosave", action="store_false", dest="save", help="don't save pk files")
+
+    parser.add_argument("--print", action="store_true", default=True, help="print fits (default: True)")
+    parser.add_argument("--noprint", action="store_false", dest="print", help="don't print fits")
 
     parser.add_argument("--lr", type=float, default=0.01, help="learning rate")
     parser.add_argument("--initval", type=float, default=1.0, help="initial parameter value")

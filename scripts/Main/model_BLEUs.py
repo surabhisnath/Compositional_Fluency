@@ -1,5 +1,4 @@
-"""Parse simulation logs to plot BLEU scores per model."""
-
+"""Resimulate and plot BLEU scores per model."""
 import re
 import ast
 import matplotlib.pyplot as plt
@@ -20,28 +19,62 @@ plt.rcParams.update({
 import numpy as np
 import json
 import os
+import pickle as pk
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+from utils import *
+
 os.makedirs("../../plots/Figure3/", exist_ok=True)
 
 model_name_to_model_print = json.load(open("../../files/model_name_to_model_print.json", "r"))
 model_name_to_color = json.load(open("../../files/model_name_to_color.json", "r"))
 
-labels = ["Random", "Freq", "HS", "Freq_HS", "WeightedHS", "FreqWeightedHS", "Activity", "WeightedHSActivity", "FreqWeightedHSActivity", "OneCueStaticLocal", "CombinedCueStatic", "CombinedCueDynamicCat", "Freq_Sim_Subcategory", "Subcategory", "Freq_Subcategory", "Sim_Subcategory"]
-with open("../../models/logfiles/model_fitting/fit_and_simulate_models.log", "r") as f:
-    log_data = f.read()
-matches = re.findall(r"SIM BLEUS MEAN:\s*(\{.*?\})", log_data)
-bleu_dicts = [ast.literal_eval(match) for match in matches]
-bleus = [0.25 * d['bleu1'] + 0.25 * d['bleu2'] + 0.25 * d['bleu3'] + 0.25 * d['bleu4'] for d in bleu_dicts]         # Average BLEU-1..4 equally for a single summary score.
+numsubsamples = 3
+splits = pk.load(open("../../files/splits.pk", "rb"))
+
+sim_bleu_means = {}
+references_by_split = [[seq[2:] for seq in test_seqs] for _, test_seqs in splits]
+n_test_by_split = [len(test_seqs) for _, test_seqs in splits]
+
+for model_name in model_name_to_model_print.keys():
+    sim_path = f"../../simulations/model_simulations/{model_name.lower()}_simulations_gpt41.pk"
+
+    with open(sim_path, "rb") as f:
+        simulations = pk.load(f)
+
+    bleu_sums = None
+    bleu_count = 0
+    sim_ind = 0
+
+    for split_ind, (_, test_seqs) in enumerate(splits):
+        n_test = n_test_by_split[split_ind]
+        references = references_by_split[split_ind]
+        for _ in range(numsubsamples):
+            forbleu = simulations[sim_ind : sim_ind + n_test]
+            sim_ind += n_test
+            candidates = [sim[2:] for sim in forbleu]
+            bleu = calculate_bleu(candidates, references)
+            if bleu_sums is None:
+                bleu_sums = {k: 0.0 for k in bleu}
+            for k, v in bleu.items():
+                bleu_sums[k] += v
+            bleu_count += 1
+
+    sim_bleu_mean = sum(0.25 * (bleu_sums[k] / bleu_count) for k in bleu_sums)
+    sim_bleu_means[model_name] = sim_bleu_mean
+
+bleu_values = list(sim_bleu_means.values())
 human_bleu = 0.25 * 0.909 + 0.25 * 0.242 + 0.25 * 0.030 + 0.25 * 0.001
-modelnames = [model_name_to_model_print[m] for m in labels]
-colors = [model_name_to_color[m] for m in labels]
+modelnames = [model_name_to_model_print[m] for m in sim_bleu_means.keys()]
+colors = [model_name_to_color[m] for m in sim_bleu_means.keys()]
 
 plt.figure(figsize=(8, 5))
-x = np.arange(len(bleus))
-plt.bar(x, bleus, alpha=0.8, color=colors, edgecolor='black', linewidth=1.2)
+x = np.arange(len(bleu_values))
+plt.bar(x, bleu_values, alpha=0.8, color=colors, edgecolor='black', linewidth=1.2)
 plt.xticks(x, modelnames, rotation=90)
-plt.ylim(min(bleus)-0.01, human_bleu+0.01)
+plt.ylim(min(bleu_values)-0.01, human_bleu+0.01)
 plt.ylabel('Cross-Validated BLEU Score')
 plt.axhline(y=human_bleu, color='black', linestyle='--', linewidth=1.2)
-plt.text(len(bleus) - 0.5, human_bleu + 0.005, f'\nHuman BLEU = {human_bleu:.3f}', color='black', fontsize=10, va='top', ha='right')
+plt.text(len(bleu_values) - 0.5, human_bleu + 0.005, f'\nHuman BLEU = {human_bleu:.3f}', color='black', fontsize=10, va='top', ha='right')
 plt.tight_layout()
 plt.savefig(f"../../plots/Figure3/model_bleus.png", transparent=True, dpi=300)

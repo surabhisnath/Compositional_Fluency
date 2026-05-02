@@ -20,16 +20,20 @@ import pickle as pk
 import os
 os.makedirs("../../plots/Figure3/", exist_ok=True)
 
-modelNLLs = pk.load(open("../../files/modelNLLs.pk", "rb"))
 model_name_to_model_print = json.load(open("../../files/model_name_to_model_print.json", "r"))
 model_name_to_color = json.load(open("../../files/model_name_to_color.json", "r"))
 
-print(model_name_to_model_print)
-print(modelNLLs)
+modelNLLs = {}
+
+for model_name in model_name_to_model_print.keys():
+    path = f"../../fits/model_fits/{model_name.lower()}_fits_gpt41.pk"
+    
+    results = pk.load(open(path, "rb"))
+    modelNLLs[model_name] = sum(results["testNLLs"])
 
 modelnlls = list(modelNLLs.values())
-modelnames = [model_name_to_model_print[m] for m in list(modelNLLs.keys())]
-colors = [model_name_to_color[m] for m in list(modelNLLs.keys())]
+modelnames = [model_name_to_model_print[m] for m in modelNLLs.keys()]
+colors = [model_name_to_color[m] for m in modelNLLs.keys()]
 
 plt.figure(figsize=(8, 5))
 x = np.arange(len(modelNLLs))
@@ -37,7 +41,5 @@ plt.bar(x, modelnlls, alpha=0.8, color=colors, edgecolor='black', linewidth=1.2)
 plt.xticks(x, modelnames, rotation=90)
 plt.ylim(min(modelnlls) - 100, max(modelnlls) + 100)
 plt.ylabel(f'Sum Test NLL (over 5 folds)')
-# plt.xticks([], [])
-# plt.xlabel('')
 plt.tight_layout()
 plt.savefig("../../plots/Figure3/model_nlls.png", transparent=True, dpi=300)

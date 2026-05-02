@@ -46,13 +46,11 @@ Before you being, ensure all models you wish to run are set to 1 in `files/model
 
 1. To replicate Figure 1C: run `scripts/Main/make_TSNE.py`. To plot the histogram of feature categories in Figure 1B: run `scripts/main/plot_feature_categories.py`. All plots will be saved in `plots/Figure1/`
 
-2. To replicate Figure 2 (and Figure S1: Replication of Figure 2 with weighted measures): Run `scripts/Main/Paper_Analysis.ipynb`. All plots will be saved in `plots/Figure2/`
+2. To analyse features and replicate Figure 2: run `scripts/Main/Model-free_Analysis.ipynb`. All plots will be saved in `plots/Figure2/`
 
 3. To replicate Figure 3: run `scripts/Main/model_NLLs.py` to plot Figure 3B, and run `python scripts/Main/model_BLEUs.py` to plot Figure 3C. `model_nlls.png` and `model_bleus.png` will be saved in `plots/Figure3/`
 
-    To re-run model fitting and simulation, run the following:
-    - Model Fitting: `python models/runner.py --fit`
-    - Model Simulation: `python models/runner.py --simulate`
+  To re-run model fitting and simulation: run `python models/runner.py --fit --simulate` (run overnight)
 
 4. To replicate Figure 4: 
 First perform feature ablation by running: `python runner.py --ablation`. Ablations saved as `fits/ablations/ablations_Activity.pk` and `fits/ablations/ablations_HS.pk`
@@ -63,3 +61,18 @@ Run: `python runner.py --RT_analysis`.
 
 6. To replicate Figure 6 plots:
 Run: `python runner.py --ARS`. Plots saved as `plots/Figure6/meanlogRT_transitions.png` and `plots/Figure6/meanprob_transitions.png`
+
+
+## Citation
+
+If you found this work useful, please consider citing us:
+
+```
+@article{nathcompositional,
+  title={A Compositional Model of Semantic Fluency},
+  author={Nath, Surabhi S and Modirshanechi, Alireza and Dayan, Peter},
+  year={2026},
+  publisher={OSF},
+  url={https://osf.io/preprints/psyarxiv/adwzp_v1}, 
+}
+```

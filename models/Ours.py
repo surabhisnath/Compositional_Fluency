@@ -24,13 +24,12 @@ class Ours(Model):
             self.feature_names_HS, self.features_HS, self.feature_names_Act, self.features_Act = self.get_features()
             self.num_features_HS = len(self.feature_names_HS)
             self.num_features_Act = len(self.feature_names_Act)
-            print(self.num_features_HS)
-            print(self.num_features_Act)
+            print("Num HS features:", self.num_features_HS)
+            print("Num Activity features:", self.num_features_Act)
             self.sim_mat = self.get_feature_sim_mat_recoverable()
         else:
             self.feature_names, self.features = self.get_features()
             self.num_features = len(self.feature_names)
-            print(self.num_features)
             self.sim_mat = self.get_feature_sim_mat()
         self.pers_mat = self.get_feature_pers_mat()
         # self.all_features = torch.stack([self.features[r] for r in self.unique_responses])  # shape: [R, D]
@@ -49,13 +48,14 @@ class Ours(Model):
         """Load binary feature vectors for each response."""
         featuredict = pk.load(open(f"../files/features_{self.config['featurestouse']}.pk", "rb"))
         feature_names = list(next(iter(featuredict.values())).keys())
-        parameter_recovery_df = pd.read_csv("../csvs/parameter_recovery.csv")
         if self.config["remove_features_that_donot_recover"]:
+            parameter_recovery_df = pd.read_csv("../csvs/parameter_recovery.csv")
             unrecovered_features = [f"feature_{feat}" for feat in parameter_recovery_df.loc[(parameter_recovery_df["R2_HS"] < 0.5) & (parameter_recovery_df["R2_Activity"] < 0.5), "Feature"]] 
             print(unrecovered_features)
             feature_names_that_recover = [f for f in feature_names if f not in unrecovered_features]
             return feature_names_that_recover, {self.corrections.get(k, k): torch.tensor([1 if values.get(f, "").lower()[:4] == "true" else 0 for f in feature_names_that_recover], dtype=torch.int8, device=device) for k, values in featuredict.items()}
         if self.config["remove_weights_that_donot_recover"]:
+            parameter_recovery_df = pd.read_csv("../csvs/parameter_recovery.csv")
             unrecovered_weights_HS = [f"feature_{feat}" for feat in parameter_recovery_df.loc[parameter_recovery_df["R2_HS"] < 0.5, "Feature"]]
             unrecovered_weights_Act = [f"feature_{feat}" for feat in parameter_recovery_df.loc[parameter_recovery_df["R2_Activity"] < 0.5, "Feature"]]
             print(unrecovered_weights_HS)

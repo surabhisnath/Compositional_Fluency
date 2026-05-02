@@ -122,6 +122,7 @@ class Model:
         
         # Precompute CV splits for group fitting.
         self.splits = self.split_sequences(self.sequences.copy())     # perform CV, only used in group fitting
+        pk.dump(self.splits, open("../files/splits.pk", "wb"))
 
         self.start = 2
         self.init_val = self.config["initval"]
@@ -359,12 +360,7 @@ class Model:
             splitstofit = self.splits
         else:
             splitstofit = self.custom_splits
-        
-        # refnll = self.config["refnll"].lower()
-        # model = nn.DataParallel(self).to('cuda:0')
-        # if model.module.num_weights > 0:
-        #     optimizer = torch.optim.LBFGS(model.module.parameters(), lr=self.config["lr"], max_iter=self.config["maxiter"], tolerance_grad=self.config["tol"], tolerance_change=self.config["tol"])
-            
+
         self.results = {}
 
         weights_list = []
@@ -412,25 +408,12 @@ class Model:
                 weights_list.append(fittedweights)
 
             with torch.no_grad():
-                # trainnll = sum([model.module.get_nll(seq) for seq in train_sequences])
-                # testnll = sum([model.module.get_nll(seq) for seq in test_sequences])
                 trainnll = torch.stack([model.module.get_nll(seq) for seq in train_sequences]).sum().item()
-                # testnll = torch.stack([model.module.get_nll(seq) for seq in test_sequences]).sum().item()
                 if len(test_sequences) > 0:
                     testnll = torch.stack([model.module.get_nll(seq) for seq in test_sequences]).sum().item()
                 else:
                     testnll = 0.0
 
-                # if refnll == model.module.__class__.__name__.lower():
-                #     train_ref_nlls.append(trainnll)
-                #     test_ref_nlls.append(testnll)
-                #     train_nlls[split_ind] = trainnll
-                #     test_nlls[split_ind] = testnll
-                # else:
-                #     try:
-                #         train_nlls[split_ind] = trainnll - train_ref_nlls[split_ind]
-                #         test_nlls[split_ind] = testnll - test_ref_nlls[split_ind]
-                #     except:
                 train_nlls[split_ind] = trainnll
                 test_nlls[split_ind] = testnll
 
