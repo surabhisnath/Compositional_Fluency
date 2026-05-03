@@ -7,8 +7,8 @@ import os
 import json
 from scipy.stats import rankdata
 
-os.makedirs("../plots/model_recovery", exist_ok=True)
-modelstorun = json.load(open("../files/modelstorun.json", "r"))
+os.makedirs("../../plots/Supplementary/model_recovery/", exist_ok=True)
+modelstorun = json.load(open("../../files/modelstorun.json", "r"))
 models = [key for key, value in modelstorun.items() if value == 1]
 
 for m1 in models:
@@ -20,7 +20,7 @@ for m1 in models:
         sums = []
         for i in range(3):
             try:
-                fit = pk.load(open(f"../fits/model_recovery_wrong/{m2.lower()}_fits_gpt41_recovery_{m1.lower()}_{i+1}.pk", "rb"))
+                fit = pk.load(open(f"../../fits/model_recovery_wrong/{m2.lower()}_fits_gpt41_recovery_{m1.lower()}_{i+1}.pk", "rb"))
             except:
                 continue
             sum_test_NLL = sum(fit[f"testNLLs_recovery_{m1.lower()}_{i + 1}"])
@@ -40,7 +40,7 @@ for m1 in models:
     plt.xticks(rotation=90)
     plt.ylim(min(sorted_sums) - 50, max(sorted_sums) + 50)
     plt.tight_layout()
-    plt.savefig(f"../plots/model_recovery/model_recovery_{m1.lower()}.png", dpi=300)
+    plt.savefig(f"../../plots/Supplementary/model_recovery/model_recovery_{m1.lower()}.png", dpi=300)
 
 
 
@@ -53,7 +53,7 @@ for m1 in models:
         run_sums = {}
         for m2 in models:
             try:
-                fit = pk.load(open(f"../fits/model_recovery_wrong/{m2.lower()}_fits_gpt41_recovery_{m1.lower()}_{i+1}.pk", "rb"))
+                fit = pk.load(open(f"../../fits/model_recovery_wrong/{m2.lower()}_fits_gpt41_recovery_{m1.lower()}_{i+1}.pk", "rb"))
             except:
                 continue
             

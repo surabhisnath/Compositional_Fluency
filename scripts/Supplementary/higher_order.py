@@ -50,13 +50,10 @@ modelnames = [model_name_to_model_print[m] for m in list(modelNLLs.keys())]
 colors = [model_name_to_color[m] for m in list(modelNLLs.keys())]
 
 plt.figure(figsize=(5, 5))
-# x = np.arange(len(modelNLLs))
 x = np.array([0, 1, 3, 4, 6, 7])
 plt.bar(x, modelnlls, alpha=0.8, color=colors, edgecolor='black', linewidth=1.2)
 plt.xticks(x, modelnames, rotation=90)
 plt.ylim(min(modelnlls) - 100, max(modelnlls) + 100)
 plt.ylabel(f'Cross-validated NLL')
-# plt.xticks([], [])
-# plt.xlabel('')
 plt.tight_layout()
-plt.savefig("../plots/higher_order_nlls.png", dpi=300, transparent=True)
+plt.savefig("../../plots/Supplementary/higher_order_nlls.png", dpi=300, transparent=True)

@@ -40,7 +40,6 @@ def extract_test_nll(filepath, keyword):
                         continue
     return None
 
-
 def extract_embedding_dim(filepath, keyword="num embedding dimensions"):
     """Parse embedding dimension from a log file."""
     with open(filepath, 'r') as file:
@@ -86,10 +85,7 @@ for traditional_embedding_model in traditional_embedding_models:
     print(traditional_embedding_model, "\t", combinedcuestatic, "\t", combinedcuestaticweighted, "\t", combinedcuestaticweightedactivity)   
 
 our_embedding_models_x = [2, 139, 277]
-our_embedding_models_y = [23990, 22509, 20778]
-
-# plt.scatter(traditional_embedding_models_x, traditional_embedding_models_y, label='Traditional', color='blue')
-# plt.scatter(our_embedding_models_x, our_embedding_models_y, label='Ours', color='orange')
+our_embedding_models_y = [23993, 22579, 20922]
 
 plt.figure(figsize=(5, 4))
 deg = 2
@@ -118,4 +114,4 @@ plt.ylabel('Sum test NLL')
 plt.title('Scaling of Embedding Models')
 plt.legend()
 plt.tight_layout()
-plt.savefig('../plots/scaling_plot.png', dpi=300)
+plt.savefig('../../plots/Supplementary/scaling_plot.png', dpi=300)

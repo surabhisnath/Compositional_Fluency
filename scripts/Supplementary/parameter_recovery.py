@@ -23,12 +23,12 @@ weight_names = ['freq', 'Is mammal', 'Is bird', 'Is insect', 'Is reptile', 'Is a
 true_weights = []
 
 # Load ground-truth weights (full data + synthetic perturbations).
-results = pk.load(open(f"../fits/model_fits/freqweightedhsactivity_fits_gpt41_fulldata.pk", "rb"))
+results = pk.load(open(f"../../fits/model_fits/freqweightedhsactivity_fits_gpt41_fulldata.pk", "rb"))
 original_weights = results[f"weights_fold1_fulldata"]
 true_weights.append(original_weights.cpu().numpy())
 
 for i in range(1, 11):
-    weights = pk.load(open(f"../fits/parameter_recovery/fakeweights{i}.pk", "rb")).cpu().numpy()
+    weights = pk.load(open(f"../../fits/parameter_recovery/fakeweights{i}.pk", "rb")).cpu().numpy()
     true_weights.append(weights)
 
 true_weights = np.array(true_weights)
@@ -36,15 +36,9 @@ true_weights = np.array(true_weights)
 recovered_weights_means = []
 recovered_weights_se = []
 for i in range(0,11):
-    # if i == 0:      # not sure about this (unchanged weights recovery)
-    #     print(pk.load(open(f"../fits/parameter_recovery/freqweightedhsactivity_fits_gpt41_paramrecovery_{i}_1.pk", "rb")).keys())
-    #     weights1 = pk.load(open(f"../fits/parameter_recovery/freqweightedhsactivity_fits_gpt41_paramrecovery_{i}_1.pk", "rb"))[f"weights_fold1_paramrecovery_1_{i+1}"].cpu().numpy()
-    #     weights2 = pk.load(open(f"../fits/parameter_recovery/freqweightedhsactivity_fits_gpt41_paramrecovery_{i}_2.pk", "rb"))[f"weights_fold1_paramrecovery_2_{i+1}"].cpu().numpy()
-    #     weights3 = pk.load(open(f"../fits/parameter_recovery/freqweightedhsactivity_fits_gpt41_paramrecovery_{i}_3.pk", "rb"))[f"weights_fold1_paramrecovery_3_{i+1}"].cpu().numpy()
-    # else:
-    weights1 = pk.load(open(f"../fits/parameter_recovery/freqweightedhsactivity_fits_gpt41_paramrecovery_{i}_1.pk", "rb"))[f"weights_fold1_paramrecovery_{i}_1"].cpu().numpy()
-    weights2 = pk.load(open(f"../fits/parameter_recovery/freqweightedhsactivity_fits_gpt41_paramrecovery_{i}_2.pk", "rb"))[f"weights_fold1_paramrecovery_{i}_2"].cpu().numpy()
-    weights3 = pk.load(open(f"../fits/parameter_recovery/freqweightedhsactivity_fits_gpt41_paramrecovery_{i}_3.pk", "rb"))[f"weights_fold1_paramrecovery_{i}_3"].cpu().numpy()
+    weights1 = pk.load(open(f"../../fits/parameter_recovery/freqweightedhsactivity_fits_gpt41_paramrecovery_{i}_1.pk", "rb"))[f"weights_fold1_paramrecovery_{i}_1"].cpu().numpy()
+    weights2 = pk.load(open(f"../../fits/parameter_recovery/freqweightedhsactivity_fits_gpt41_paramrecovery_{i}_2.pk", "rb"))[f"weights_fold1_paramrecovery_{i}_2"].cpu().numpy()
+    weights3 = pk.load(open(f"../../fits/parameter_recovery/freqweightedhsactivity_fits_gpt41_paramrecovery_{i}_3.pk", "rb"))[f"weights_fold1_paramrecovery_{i}_3"].cpu().numpy()
 
     recovered_weights_means.append((weights1 + weights2 + weights3) / 3)
     recovered_weights_se.append(np.std([weights1, weights2, weights3], axis=0) / np.sqrt(3))
@@ -54,7 +48,7 @@ recovered_weights_se = np.array(recovered_weights_se)
 
 results = []
 
-os.makedirs("../plots/parameter_recovery/", exist_ok=True)
+os.makedirs("../../plots/Supplementary/parameter_recovery/", exist_ok=True)
 cmap = plt.get_cmap('tab20b')
 plt.figure(figsize=(4, 4))
 r2_freq = identity_r2(true_weights[:,0], recovered_weights_means[:,0])
@@ -75,7 +69,7 @@ plt.xlabel("True Weights")
 plt.ylabel("Recovered Weights")
 plt.legend(title="Points", bbox_to_anchor=(1.05, 1), loc='upper left', fontsize=8)
 plt.tight_layout()
-plt.savefig(f"../plots/parameter_recovery/0_{weight_names[0].replace('/', ' or ')}_recovery.png", bbox_inches='tight', dpi=300)
+plt.savefig(f"../../plots/Supplementary/parameter_recovery/0_{weight_names[0].replace('/', ' or ')}_recovery.png", bbox_inches='tight', dpi=300)
 plt.close()
 
 results.append({'Feature': weight_names[0],
@@ -123,7 +117,7 @@ for w in np.arange(1, 139):
 
     fig.suptitle(weight_names[w])
     plt.tight_layout()
-    plt.savefig(f"../plots/{w}_{weight_names[w].replace('/', ' or ')}_recovery.png", bbox_inches='tight', dpi=300)
+    plt.savefig(f"../../plots/Supplementary/parameter_recovery/{w}_{weight_names[w].replace('/', ' or ')}_recovery.png", bbox_inches='tight', dpi=300)
     plt.close()
 
     results.append({
@@ -135,11 +129,4 @@ for w in np.arange(1, 139):
     })
 
 df_results = pd.DataFrame(results)
-df_results.to_csv('../csvs/parameter_recovery.csv', index=False)
-
-plt.figure(figsize=(8, 4))
-plt.hist(df_results["R2_HS"])
-plt.savefig('../plots/r2_hs_histogram.png', bbox_inches='tight', dpi=300)
-plt.figure(figsize=(8, 4))
-plt.hist(df_results["R2_Activity"])
-plt.savefig('../plots/r2_activity_histogram.png', bbox_inches='tight', dpi=300)
+df_results.to_csv('../../csvs/parameter_recovery.csv', index=False)
