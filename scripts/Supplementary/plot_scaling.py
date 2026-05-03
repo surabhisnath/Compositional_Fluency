@@ -68,7 +68,7 @@ traditional_embedding_models = ["clip", "minilm",
 traditional_embedding_models_x = []
 traditional_embedding_models_y = [] 
 for traditional_embedding_model in traditional_embedding_models:
-    filepath = f"../models/logfiles/scaling_plot/{traditional_embedding_model}_andweighted.log"
+    filepath = f"../../files/logfiles/scaling_plot/{traditional_embedding_model}_andweighted.log"
     embedding_dim = extract_embedding_dim(filepath)
 
     traditional_embedding_models_x.append(2)
@@ -106,11 +106,11 @@ y_ours_fit = poly_ours(x_ours_fit)
 plt.scatter(traditional_embedding_models_x, traditional_embedding_models_y, label='Pre-trained', color='#FFD470')
 plt.plot(x_trad_fit, y_trad_fit, color="#FFD470", linestyle='--')
 
-plt.scatter(our_embedding_models_x, our_embedding_models_y, label='Fauna', color='#8FCF8F')
+plt.scatter(our_embedding_models_x, our_embedding_models_y, label='Conceptome', color='#8FCF8F')
 plt.plot(x_ours_fit, y_ours_fit, color="#8FCF8F", linestyle='--')
 
 plt.xlabel('Number of Weights')
-plt.ylabel('Sum test NLL')
+plt.ylabel('Cross-validated NLL')
 plt.title('Scaling of Embedding Models')
 plt.legend()
 plt.tight_layout()

@@ -20,7 +20,7 @@ for m1 in models:
         sums = []
         for i in range(3):
             try:
-                fit = pk.load(open(f"../../fits/model_recovery_wrong/{m2.lower()}_fits_gpt41_recovery_{m1.lower()}_{i+1}.pk", "rb"))
+                fit = pk.load(open(f"../../fits/model_recovery/{m2.lower()}_fits_gpt41_recovery_{m1.lower()}_{i+1}.pk", "rb"))
             except:
                 continue
             sum_test_NLL = sum(fit[f"testNLLs_recovery_{m1.lower()}_{i + 1}"])
@@ -53,7 +53,7 @@ for m1 in models:
         run_sums = {}
         for m2 in models:
             try:
-                fit = pk.load(open(f"../../fits/model_recovery_wrong/{m2.lower()}_fits_gpt41_recovery_{m1.lower()}_{i+1}.pk", "rb"))
+                fit = pk.load(open(f"../../fits/model_recovery/{m2.lower()}_fits_gpt41_recovery_{m1.lower()}_{i+1}.pk", "rb"))
             except:
                 continue
             
