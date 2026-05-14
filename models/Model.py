@@ -223,8 +223,8 @@ class Model:
         device = "cuda" if torch.cuda.is_available() else "cpu"
 
         if self.config["representation"] == "clip":
-            model = CLIPTextModelWithProjection.from_pretrained("openai/clip-vit-large-patch14", local_files_only=True).to(device)
-            tokenizer = AutoTokenizer.from_pretrained("openai/clip-vit-large-patch14", local_files_only=True)
+            model = CLIPTextModelWithProjection.from_pretrained("openai/clip-vit-large-patch14").to(device)
+            tokenizer = AutoTokenizer.from_pretrained("openai/clip-vit-large-patch14")
             inputs = tokenizer(self.unique_responses, padding=True, return_tensors="pt").to(device)
             with torch.no_grad():
                 outputs = model(**inputs)
