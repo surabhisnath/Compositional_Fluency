@@ -29,3 +29,4 @@ statsmodels
 model2vec
 numdifftools
 brokenaxes
+jupyter

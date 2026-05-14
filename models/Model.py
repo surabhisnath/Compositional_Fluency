@@ -438,7 +438,7 @@ class Model:
                 print(f"weights for each {self.config['cv']} fold", self.results[f"weights{self.suffix}"])
 
         if self.config["save"]:
-            pk.dump(self.results, open(f"../fits/{folderinfits}/{model.module.__class__.__name__.lower()}_fits_{self.config["featurestouse"]}{self.suffix}.pk", "wb"))
+            pk.dump(self.results, open(f"../fits/{folderinfits}/{model.module.__class__.__name__.lower()}_fits_{self.config['featurestouse']}{self.suffix}.pk", "wb"))
 
     def simulate(self, customsequences=None, folderinsimulations="model_simulations"):
         if customsequences is None:
@@ -450,7 +450,7 @@ class Model:
             results = self.results
         except:
             print("Loading fit from file...")
-            results = pk.load(open(f"../fits/model_fits/{self.__class__.__name__.lower()}_fits_{self.config["featurestouse"]}{self.suffix}.pk", "rb"))
+            results = pk.load(open(f"../fits/model_fits/{self.__class__.__name__.lower()}_fits_{self.config['featurestouse']}{self.suffix}.pk", "rb"))
         self.simulations = []
         self.bleus = []
         print(self.__class__.__name__)
@@ -478,7 +478,7 @@ class Model:
         print("SIM BLEUS MEAN:", {k: sum(d[k] for d in self.bleus) / len(self.bleus) for k in self.bleus[0]})
 
         if self.config["save"]:
-            pk.dump(self.simulations, open(f"../simulations/{folderinsimulations}/{self.__class__.__name__.lower()}_simulations_{self.config["featurestouse"]}{self.suffix}.pk", "wb"))
+            pk.dump(self.simulations, open(f"../simulations/{folderinsimulations}/{self.__class__.__name__.lower()}_simulations_{self.config['featurestouse']}{self.suffix}.pk", "wb"))
 
         if self.config["print"]:
             print(self.model_class, "simulations..................")
@@ -508,7 +508,7 @@ class Model:
         print("SIM BLEUS MEAN:", {k: sum(d[k] for d in self.bleus) / len(self.bleus) for k in self.bleus[0]})
 
         if self.config["save"]:
-            pk.dump(self.simulations, open(f"../simulations/{folderinsimulations}/{self.__class__.__name__.lower()}_simulations_{self.config["featurestouse"]}{self.suffix}.pk", "wb"))
+            pk.dump(self.simulations, open(f"../simulations/{folderinsimulations}/{self.__class__.__name__.lower()}_simulations_{self.config['featurestouse']}{self.suffix}.pk", "wb"))
 
         if self.config["print"]:
             print(self.model_class, "simulations..................")

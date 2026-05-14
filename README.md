@@ -27,8 +27,8 @@ The ability to recall semantically connected concepts---be it animals, summer fr
 We recommend setting up a python virtual environment and installing all the requirements. Please follow these steps:
 
 ```bash
-git clone https://github.com/surabhisnath/process_modelling.git
-cd process_modelling
+git clone https://github.com/surabhisnath/Compositional_Fluency.git
+cd Compositional_Fluency
 
 python3 -m venv .env
 
@@ -47,23 +47,23 @@ pip install -r requirements.txt
 `models/runner.py` is the main runner script for the following analyses. All settings can be set using arguments of `runner.py`.
 Before you being, ensure all models you wish to run are set to 1 in `files/modeltorun.json`.
 
-1. To replicate Figure 1C: run `scripts/Main/make_TSNE.py`. To plot the histogram of feature categories in Figure 1B: run `scripts/main/plot_feature_categories.py`. All plots will be saved in `plots/Figure1/`
+1. To replicate Figure 1C: run `cd scripts/Main; python make_TSNE.py`. To plot the histogram of feature categories in Figure 1B: run `cd scripts/main; python plot_feature_categories.py`. All plots will be saved in `plots/Figure1/`
 
-2. To analyse features and replicate Figure 2: run `scripts/Main/Model-free_Analysis.ipynb`. All plots will be saved in `plots/Figure2/`
+2. To analyse features and replicate Figure 2: run the notebook at `scripts/Main/Model-free_Analysis.ipynb`. All plots will be saved in `plots/Figure2/`
 
-3. To replicate Figure 3: run `scripts/Main/model_NLLs.py` to plot Figure 3B, and run `python scripts/Main/model_BLEUs.py` to plot Figure 3C. `model_nlls.png` and `model_bleus.png` will be saved in `plots/Figure3/`
+3. To replicate Figure 3: run `cd scripts/Main; python model_NLLs.py` to plot Figure 3B, and run `cd scripts/Main/; python model_BLEUs.py` to plot Figure 3C. `model_nlls.png` and `model_bleus.png` will be saved in `plots/Figure3/`
 
-    To re-run model fitting and simulation: run `python models/runner.py --fit --simulate` (run overnight)
+    To re-run model fitting and simulation: run `cd models; python runner.py --fit --simulate` (run overnight)
 
 4. To replicate Figure 4: 
-First perform feature ablation by running: `python runner.py --ablation`. Ablations saved as `fits/ablations/ablations_Activity.pk` and `fits/ablations/ablations_HS.pk`
-Then plot the figure: `python runner.py --visweights`. Plot saved as `plots/Figure4/visweights.png`
+First perform feature ablation by running: `cd models; python runner.py --ablation`. Ablations saved as `fits/ablations/ablations_Activity.pk` and `fits/ablations/ablations_HS.pk`
+Then plot the figure: `cd models; python runner.py --visweights`. Plot saved as `plots/Figure4/visweights.png`
 
 5.  To replicate RT modelling in Figure 5 and Figure 6:
-Run: `python runner.py --RT_analysis`.
+Run: `cd models; python runner.py --RT_analysis`.
 
 6. To replicate Figure 6 plots:
-Run: `python runner.py --ARS`. Plots saved as `plots/Figure6/meanlogRT_transitions.png` and `plots/Figure6/meanprob_transitions.png`
+Run: `cd models; python runner.py --ARS`. Plots saved as `plots/Figure6/meanlogRT_transitions.png` and `plots/Figure6/meanprob_transitions.png`
 
 ## Citation
 

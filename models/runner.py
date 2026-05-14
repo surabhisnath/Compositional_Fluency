@@ -130,7 +130,7 @@ def run(config):
             for model_name in models[model_class].models:
                 if config["save"]:
                     try:
-                        results = pk.load(open(f"../fits/model_fits/{model_name.lower()}_fits_{config["featurestouse"]}.pk", "rb"))
+                        results = pk.load(open(f"../fits/model_fits/{model_name.lower()}_fits_{config['featurestouse']}.pk", "rb"))
                     except:
                         print(model_class, model_name)
                         start_time = time.time()
@@ -164,7 +164,7 @@ def run(config):
             for model_name in models[model_class].models:
                 if config["save"]:
                     try:
-                        simseqs = pk.load(open(f"../simulations/model_simulations/{model_name.lower()}_simulations_{config["featurestouse"]}.pk", "rb"))
+                        simseqs = pk.load(open(f"../simulations/model_simulations/{model_name.lower()}_simulations_{config['featurestouse']}.pk", "rb"))
                     except:
                         if models[model_class].models[model_name].dynamic:
                             if not models[model_class].models[model_name].dynamic_cat:
@@ -183,12 +183,12 @@ def run(config):
     def get_results():
         suffix = "_fulldata"
         try:
-            results = pk.load(open(f"../fits/model_fits/{best_model_name.lower()}_fits_{config["featurestouse"]}{suffix}.pk", "rb"))
+            results = pk.load(open(f"../fits/model_fits/{best_model_name.lower()}_fits_{config['featurestouse']}{suffix}.pk", "rb"))
         except:
             models[best_model_class].models[best_model_name].suffix = suffix
             models[best_model_class].models[best_model_name].custom_splits = [(models[best_model_class].models[best_model_name].sequences, [])]
             models[best_model_class].models[best_model_name].fit(customsequences=True)
-            results = pk.load(open(f"../fits/model_fits/{best_model_name.lower()}_fits_{config["featurestouse"]}{suffix}.pk", "rb"))
+            results = pk.load(open(f"../fits/model_fits/{best_model_name.lower()}_fits_{config['featurestouse']}{suffix}.pk", "rb"))
         return results
 
     def get_weights():
@@ -608,14 +608,14 @@ def run(config):
                     simseqs = models[model_class_sim].models[model_name_sim].simulations
                 except:
                     print(f"Loading simulations for {model_name_sim}")
-                    simseqs = pk.load(open(f"../simulations/model_simulations/{model_name_sim.lower()}_simulations_{config["featurestouse"]}.pk", "rb"))
+                    simseqs = pk.load(open(f"../simulations/model_simulations/{model_name_sim.lower()}_simulations_{config['featurestouse']}.pk", "rb"))
                 
                 for model_class in models:
                     for model_name in models[model_class].models:
                         for ssid, ss in enumerate([simseqs[::3], simseqs[1::3], simseqs[2::3]]):
                             print(model_name_sim, model_name, ssid)
                             suffix = f"_recovery_{model_name_sim.lower()}_{ssid + 1}"
-                            if not os.path.exists(f"../fits/{foldername}/{model_name.lower()}_fits_{config["featurestouse"]}{suffix}.pk"):
+                            if not os.path.exists(f"../fits/{foldername}/{model_name.lower()}_fits_{config['featurestouse']}{suffix}.pk"):
                                 print("Fitting...", model_name_sim, model_name, ssid)
                                 models[model_class].models[model_name].suffix = suffix
                                 models[model_class].models[model_name].custom_splits = models[model_class].models[model_name].split_sequences(ss)
