@@ -180,9 +180,9 @@ def get_num_features_same(df, featurecols, column_name, nback=1):
 
 
 def add_num_features_same_columns(df, featurecols, nbacks=(2, 3, 4, 5)):
-    df = get_num_features_same(
-        df, featurecols, column_name="num_features_same", nback=1
-    )
+    # NB: do NOT recompute the 1-back num_features_same here. It is computed once
+    # on the full data before dropna() (see Figure 2A) and must be kept as-is;
+    # recomputing it after dropna() drops one row per pid and shifts Figure 2C.
     for n in nbacks:
         df = get_num_features_same(
             df, featurecols, column_name=f"num_features_same_{n}back", nback=n
