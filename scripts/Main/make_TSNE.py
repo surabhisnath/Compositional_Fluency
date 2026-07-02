@@ -1,7 +1,6 @@
 """Generate TSNE plots for feature embeddings and selected attributes."""
 
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
 import pickle as pk
 from sklearn.manifold import TSNE
@@ -25,7 +24,7 @@ def make_TSNE(embeddings, responses, clusters=None, show_responses=False, featur
         ax.scatter(tsne_embeddings[cluster_0_mask, 0], tsne_embeddings[cluster_0_mask, 1], alpha=0.5, s=17, color="#ED7979", edgecolors="#ED3030", linewidths=0.6, label='Cluster 0')
         ax.scatter(tsne_embeddings[cluster_1_mask, 0], tsne_embeddings[cluster_1_mask, 1], alpha=0.5, s=17, color="#75E151", edgecolors="#3C9120", linewidths=0.6, label='Cluster 1')
     else:
-        sc = ax.scatter(tsne_embeddings[:, 0], tsne_embeddings[:, 1], alpha=0.7, s=20, c="#C29DC2", edgecolors="#97449C", linewidths=0.5)
+        ax.scatter(tsne_embeddings[:, 0], tsne_embeddings[:, 1], alpha=0.7, s=20, c="#C29DC2", edgecolors="#97449C", linewidths=0.5)
 
     if show_responses:
         n = 5  # Plot every nth label

@@ -24,13 +24,10 @@ np.random.seed(42)
 import os
 torch.manual_seed(42)
 from tqdm import tqdm
-import statsmodels.api as sm
 import statsmodels.formula.api as smf
 from scipy.stats import ttest_ind
 from itertools import combinations
 from brokenaxes import brokenaxes
-from scipy.stats import spearmanr
-from scipy.stats import norm
 
 
 best_model_class = "ours"
@@ -159,7 +156,6 @@ def run(config):
         foldername = "model_simulations"
         os.makedirs(f"../simulations/{foldername}", exist_ok=True)
         labels = []
-        modelbleus = []
         for model_class in models:
             for model_name in models[model_class].models:
                 if config["save"]:

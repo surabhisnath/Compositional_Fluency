@@ -1,7 +1,12 @@
 """Resimulate and plot BLEU scores per model."""
-import re
-import ast
 import matplotlib.pyplot as plt
+import numpy as np
+import json
+import os
+import pickle as pk
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+from utils import *
 plt.rcParams.update({
     "axes.facecolor": "white",                      # background stays white
     "axes.edgecolor": "black",                      # keep axis edges
@@ -16,13 +21,6 @@ plt.rcParams.update({
     "axes.titlesize": 18,                           # bigger title
     "figure.dpi": 100,                              # higher resolution
 })
-import numpy as np
-import json
-import os
-import pickle as pk
-import sys
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-from utils import *
 
 os.makedirs("../../plots/Figure3/", exist_ok=True)
 
@@ -77,4 +75,4 @@ plt.ylabel('Cross-Validated BLEU Score')
 plt.axhline(y=human_bleu, color='black', linestyle='--', linewidth=1.2)
 plt.text(len(bleu_values) - 0.5, human_bleu + 0.005, f'\nHuman BLEU = {human_bleu:.3f}', color='black', fontsize=10, va='top', ha='right')
 plt.tight_layout()
-plt.savefig(f"../../plots/Figure3/model_bleus.png", transparent=True, dpi=300)
+plt.savefig("../../plots/Figure3/model_bleus.png", transparent=True, dpi=300)

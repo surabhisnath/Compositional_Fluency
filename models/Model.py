@@ -1,44 +1,27 @@
 """Core model utilities, data loading, and shared fitting helpers."""
 
 import os
-from sympy import sequence
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 import torch
 from transformers import CLIPTextModelWithProjection, AutoTokenizer
 from sentence_transformers import SentenceTransformer
 import warnings
 warnings.simplefilter("ignore")
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
-from scipy.optimize import minimize
-from tqdm import tqdm
-from pybads import BADS
-import pymc as pm
-import arviz as az
 import torch
-from torch.optim import LBFGS
-from torch.autograd.functional import hessian
 import requests
 import math
 import json
 from sklearn.model_selection import train_test_split, KFold
-from numba import njit
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "scripts")))
 from utils import *
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-import torch
 import torch.nn as nn
 import requests
-from scipy.stats import pearsonr, spearmanr
-import time
-from collections import Counter
-from scipy.stats import ttest_ind
 import pickle as pk
 from model2vec import StaticModel
-from concurrent.futures import ThreadPoolExecutor
-import torch.multiprocessing as mp
 import copy
 
 SEED = 42
