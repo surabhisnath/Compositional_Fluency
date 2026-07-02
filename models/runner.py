@@ -724,6 +724,7 @@ def run(config):
                         activityeratiomax[i].item(),
                         globaleratiomax[i].item(),
                     )
+                    max_type1 = None
                     if config["ARS_segmentation_type"] == 3:
                         max_type1 = ["HS", "freq", "activity"][
                             torch.tensor([h1, f1, a1]).argmax().item()
@@ -745,6 +746,7 @@ def run(config):
                         activityeratiosum[i].item(),
                         globaleratiosum[i].item(),
                     )
+                    max_type2 = None
                     if config["ARS_segmentation_type"] == 3:
                         max_type2 = ["HS", "freq", "activity"][
                             torch.tensor([h2, f2, a2]).argmax().item()

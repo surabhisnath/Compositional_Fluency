@@ -80,12 +80,10 @@ def get_featuredf(llm_name):
             "TRUE": 1,
             "true": 1,
             "true.": 1,
-            "True.": 1,
             "False": 0,
             "False.": 0,
             "false": 0,
             "false.": 0,
-            "False.": 0,
         }
     )
     applymap_is_int = featuredf.apply(lambda col: col.map(lambda x: isinstance(x, int)))
