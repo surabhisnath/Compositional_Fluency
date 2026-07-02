@@ -41,7 +41,6 @@ plt.rcParams.update(
 
 # # Globals
 
-num_features = 138
 BASE_PATH = "../../"
 os.makedirs(BASE_PATH + "plots/Figure2/", exist_ok=True)
 
