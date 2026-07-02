@@ -170,7 +170,7 @@ features = [
 
 try:
     features_dict = pk.load(open(f"{name}.pk", "rb"))
-except:
+except Exception:
     features_dict = {}
 print("BEFORE", len(features_dict))
 

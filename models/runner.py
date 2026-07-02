@@ -153,7 +153,7 @@ def run(config):
                                 "rb",
                             )
                         )
-                    except:
+                    except Exception:
                         print(model_class, model_name)
                         start_time = time.time()
                         models[model_class].models[model_name].fit(
@@ -195,7 +195,7 @@ def run(config):
                                 "rb",
                             )
                         )
-                    except:
+                    except Exception:
                         if models[model_class].models[model_name].dynamic:
                             if not models[model_class].models[model_name].dynamic_cat:
                                 continue
@@ -223,7 +223,7 @@ def run(config):
                     "rb",
                 )
             )
-        except:
+        except Exception:
             models[best_model_class].models[best_model_name].suffix = suffix
             models[best_model_class].models[best_model_name].custom_splits = [
                 (models[best_model_class].models[best_model_name].sequences, [])
@@ -278,7 +278,7 @@ def run(config):
             barplot_Activity = pk.load(
                 open("../fits/ablations/ablations_Activity.pk", "rb")
             )
-        except:
+        except Exception:
             totalnlls = []
             for i in tqdm(range(len(original_weights) + 1)):
                 weights = original_weights.clone()
@@ -907,7 +907,7 @@ def run(config):
             for model_name_sim in models[model_class_sim].models:
                 try:
                     simseqs = models[model_class_sim].models[model_name_sim].simulations
-                except:
+                except Exception:
                     print(f"Loading simulations for {model_name_sim}")
                     simseqs = pk.load(
                         open(
@@ -964,7 +964,7 @@ def run(config):
                         "rb",
                     )
                 )
-            except:
+            except Exception:
                 print(f"Modifying weights... {i}")
                 weights = changeweights(original_weights, i)
                 models[best_model_class].models[

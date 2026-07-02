@@ -60,7 +60,7 @@ class Model:
         )  # correcting spaces in spelling
         try:
             self.data = self.data[~(self.data["invalid"] == 1)]
-        except:
+        except Exception:
             pass
 
         if config["usehillsresp"]:
@@ -133,7 +133,7 @@ class Model:
         self.sequence_lengths = [len(s) for s in self.sequences]
         try:
             self.RTs = self.data.groupby("pid").agg(list)["RT"].tolist()
-        except:
+        except Exception:
             self.RTs = []
 
         # Precompute CV splits for group fitting.
@@ -563,7 +563,7 @@ class Model:
 
         try:
             results = self.results
-        except:
+        except Exception:
             print("Loading fit from file...")
             results = pk.load(
                 open(

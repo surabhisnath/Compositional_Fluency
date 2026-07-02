@@ -203,7 +203,7 @@ data = data.dropna()
 # shuffle within each pid - TAKES SUPER LONG, SERIALIZE
 try:
     means = pk.load(open(base_path + "files/shuffled_data_meanHS.pk", "rb"))
-except:
+except Exception:
     means = []
     for _ in tqdm(range(100)):
         shuffled_data2 = data.groupby("pid", group_keys=False).apply(

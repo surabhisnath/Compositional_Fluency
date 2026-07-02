@@ -27,7 +27,7 @@ for m1 in models:
                         "rb",
                     )
                 )
-            except:
+            except Exception:
                 continue
             sum_test_NLL = sum(fit[f"testNLLs_recovery_{m1.lower()}_{i + 1}"])
             sums.append(sum_test_NLL)
@@ -69,7 +69,7 @@ for m1 in models:
                         "rb",
                     )
                 )
-            except:
+            except Exception:
                 continue
 
             sum_test_NLL = sum(fit[f"testNLLs_recovery_{m1.lower()}_{i + 1}"])

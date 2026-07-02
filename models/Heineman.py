@@ -55,7 +55,7 @@ class Heineman(Model):
                             for curr in categories:
                                 try:
                                     transition_matrix[prev, curr] += 1
-                                except:
+                                except Exception:
                                     continue  # when NaN
                 normalized_transition_matrix = (
                     transition_matrix / transition_matrix.sum(axis=1, keepdims=True)
@@ -76,7 +76,7 @@ class Heineman(Model):
                     for curr in row["categories"]:
                         try:
                             transition_matrix[prev, curr] += 1
-                        except:
+                        except Exception:
                             continue  # when NaN
             normalized_transition_matrix = transition_matrix / transition_matrix.sum(
                 axis=1, keepdims=True
@@ -121,7 +121,7 @@ class Heineman(Model):
         )  # shape: (len_seq - 2, num_resp)
         try:
             cat_trans_terms = self.cat_trans_terms[" ".join(seq)]
-        except:
+        except Exception:
             cat_trans_terms = torch.stack(
                 [
                     torch.tensor(
