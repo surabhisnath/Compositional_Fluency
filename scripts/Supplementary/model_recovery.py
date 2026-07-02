@@ -1,10 +1,11 @@
 """Aggregate model recovery fits and plot comparative NLLs."""
 
+import json
+import os
 import pickle as pk
+
 import matplotlib.pyplot as plt
 import numpy as np
-import os
-import json
 from scipy.stats import rankdata
 
 os.makedirs("../../plots/Supplementary/model_recovery/", exist_ok=True)
@@ -20,13 +21,18 @@ for m1 in models:
         sums = []
         for i in range(3):
             try:
-                fit = pk.load(open(f"../../fits/model_recovery/{m2.lower()}_fits_gpt41_recovery_{m1.lower()}_{i+1}.pk", "rb"))
+                fit = pk.load(
+                    open(
+                        f"../../fits/model_recovery/{m2.lower()}_fits_gpt41_recovery_{m1.lower()}_{i + 1}.pk",
+                        "rb",
+                    )
+                )
             except:
                 continue
             sum_test_NLL = sum(fit[f"testNLLs_recovery_{m1.lower()}_{i + 1}"])
             sums.append(sum_test_NLL)
         mean_sumtestnlls.append(np.mean(sums))
-        se_nlls.append(np.std(sums)/np.sqrt(3))
+        se_nlls.append(np.std(sums) / np.sqrt(3))
 
     sorted_indices = np.argsort(mean_sumtestnlls)
     sorted_models = [models[i] for i in sorted_indices]
@@ -34,14 +40,18 @@ for m1 in models:
     sorted_errors = [se_nlls[i] for i in sorted_indices]
 
     plt.figure(figsize=(10, 6))
-    plt.bar(sorted_models, sorted_sums, yerr=sorted_errors, capsize=5, color='mediumpurple')
+    plt.bar(
+        sorted_models, sorted_sums, yerr=sorted_errors, capsize=5, color="mediumpurple"
+    )
     plt.title(f"Model Recovery for {m1}")
     plt.ylabel("Test NLL")
     plt.xticks(rotation=90)
     plt.ylim(min(sorted_sums) - 50, max(sorted_sums) + 50)
     plt.tight_layout()
-    plt.savefig(f"../../plots/Supplementary/model_recovery/model_recovery_{m1.lower()}.png", dpi=300)
-
+    plt.savefig(
+        f"../../plots/Supplementary/model_recovery/model_recovery_{m1.lower()}.png",
+        dpi=300,
+    )
 
 
 for m1 in models:
@@ -53,19 +63,24 @@ for m1 in models:
         run_sums = {}
         for m2 in models:
             try:
-                fit = pk.load(open(f"../../fits/model_recovery/{m2.lower()}_fits_gpt41_recovery_{m1.lower()}_{i+1}.pk", "rb"))
+                fit = pk.load(
+                    open(
+                        f"../../fits/model_recovery/{m2.lower()}_fits_gpt41_recovery_{m1.lower()}_{i + 1}.pk",
+                        "rb",
+                    )
+                )
             except:
                 continue
-            
+
             sum_test_NLL = sum(fit[f"testNLLs_recovery_{m1.lower()}_{i + 1}"])
             run_sums[m2] = sum_test_NLL
-        
+
         if len(run_sums) == 0:
             continue
 
         models_in_run = list(run_sums.keys())
         nll_values = np.array([run_sums[m] for m in models_in_run])
-        
+
         ranks = rankdata(nll_values, method="average")  # ascending by default
         for m2, r in zip(models_in_run, ranks):
             ranks_per_model[m2].append(r)

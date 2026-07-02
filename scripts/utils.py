@@ -1,9 +1,12 @@
 """Shared utilities for modeling, plotting, and preprocessing."""
 
-import numpy as np
 import warnings
+
+import numpy as np
+
 warnings.simplefilter("ignore")
 from nltk.translate.bleu_score import sentence_bleu
+
 
 # Functions
 def calculate_bleu(generated_sequences, real_sequences):
@@ -15,4 +18,9 @@ def calculate_bleu(generated_sequences, real_sequences):
         score3 = sentence_bleu(real_sequences, gen_seq, weights=(0, 0, 1, 0))
         score4 = sentence_bleu(real_sequences, gen_seq, weights=(0, 0, 0, 1))
         scores.append([score1, score2, score3, score4])
-    return dict(zip(["bleu1", "bleu2", "bleu3", "bleu4"], np.round(np.mean(scores, axis=0), 2).tolist()))
+    return dict(
+        zip(
+            ["bleu1", "bleu2", "bleu3", "bleu4"],
+            np.round(np.mean(scores, axis=0), 2).tolist(),
+        )
+    )
