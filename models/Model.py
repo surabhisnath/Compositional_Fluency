@@ -29,7 +29,6 @@ import copy
 import pickle as pk
 
 import requests
-import torch.nn as nn
 from model2vec import StaticModel
 
 SEED = 42
@@ -439,10 +438,10 @@ class Model:
         for split_ind, (train_sequences, test_sequences) in enumerate(splitstofit):
             # Added:
             self.load_state_dict(init_state)
-            model = nn.DataParallel(self).to("cuda:0")
-            if model.module.num_weights > 0:
+            self.to("cuda:0")
+            if self.num_weights > 0:
                 optimizer = torch.optim.LBFGS(
-                    model.module.parameters(),
+                    self.parameters(),
                     lr=self.config["lr"],
                     max_iter=self.config["maxiter"],
                     tolerance_grad=self.config["tol"],
@@ -459,16 +458,16 @@ class Model:
                 nonlocal lbfgs_iters
                 optimizer.zero_grad()
                 loss = torch.stack(
-                    [model.module.get_nll(seq) for seq in train_sequences]
+                    [self.get_nll(seq) for seq in train_sequences]
                 ).sum()
                 if self.config["reglambda"] > 0:
                     if self.config["regtype"] == "l1":
                         reg_term = self.config["reglambda"] * torch.sum(
-                            torch.abs(model.module.weights)
+                            torch.abs(self.weights)
                         )
                     elif self.config["regtype"] == "l2":
                         reg_term = self.config["reglambda"] * torch.sum(
-                            model.module.weights**2
+                            self.weights**2
                         )
                     else:
                         reg_term = torch.tensor(0.0, device=loss.device)
@@ -476,14 +475,14 @@ class Model:
                     loss = loss + reg_term
                 loss.backward()
                 loss_history.append(loss.item())
-                param_history.append(model.module.weights.detach().cpu().clone())
+                param_history.append(self.weights.detach().cpu().clone())
                 lbfgs_iters += 1
                 return loss
 
-            if model.module.num_weights > 0:
+            if self.num_weights > 0:
                 optimizer.step(closure)
                 print(f"LBFGS iterations run: {lbfgs_iters}")
-                fittedweights = model.module.weights.detach().clone()
+                fittedweights = self.weights.detach().clone()
                 self.results[f"weights_fold{split_ind + 1}{self.suffix}"] = (
                     fittedweights
                 )
@@ -491,14 +490,14 @@ class Model:
 
             with torch.no_grad():
                 trainnll = (
-                    torch.stack([model.module.get_nll(seq) for seq in train_sequences])
+                    torch.stack([self.get_nll(seq) for seq in train_sequences])
                     .sum()
                     .item()
                 )
                 if len(test_sequences) > 0:
                     testnll = (
                         torch.stack(
-                            [model.module.get_nll(seq) for seq in test_sequences]
+                            [self.get_nll(seq) for seq in test_sequences]
                         )
                         .sum()
                         .item()
@@ -523,7 +522,7 @@ class Model:
             len(splitstofit)
         )
 
-        if model.module.num_weights > 0:
+        if self.num_weights > 0:
             self.results[f"weights{self.suffix}"] = weights_list
             self.results[f"mean_weights{self.suffix}"] = torch.mean(
                 torch.stack(weights_list), dim=0
@@ -540,7 +539,7 @@ class Model:
                 f"Sum testNLL over {self.config['cv']} fold(s)",
                 sum(self.results[f"testNLLs{self.suffix}"]),
             )
-            if model.module.num_weights > 0:
+            if self.num_weights > 0:
                 print(
                     f"weights for each {self.config['cv']} fold",
                     self.results[f"weights{self.suffix}"],
@@ -550,7 +549,7 @@ class Model:
             pk.dump(
                 self.results,
                 open(
-                    f"../fits/{folderinfits}/{model.module.__class__.__name__.lower()}_fits_{self.config['featurestouse']}{self.suffix}.pk",
+                    f"../fits/{folderinfits}/{self.__class__.__name__.lower()}_fits_{self.config['featurestouse']}{self.suffix}.pk",
                     "wb",
                 ),
             )
