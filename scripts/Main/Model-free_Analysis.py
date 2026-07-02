@@ -42,13 +42,13 @@ plt.rcParams.update(
 # # Globals
 
 num_features = 138
-base_path = "../../"
-os.makedirs(base_path + "plots/Figure2/", exist_ok=True)
+BASE_PATH = "../../"
+os.makedirs(BASE_PATH + "plots/Figure2/", exist_ok=True)
 
 
 # # Load Data
 
-data = pd.read_csv(base_path + "csvs/hills.csv")
+data = pd.read_csv(BASE_PATH + "csvs/hills.csv")
 data = data[
     ~data["response"].isin(["mammal", "bacterium", "unicorn", "woollymammoth"])
 ].reset_index(drop=True)
@@ -70,7 +70,7 @@ data = data.drop(
 
 
 def get_featuredf(llm_name):
-    featuredict = pk.load(open(base_path + f"files/features_{llm_name}.pk", "rb"))
+    featuredict = pk.load(open(BASE_PATH + f"files/features_{llm_name}.pk", "rb"))
     featuredf = pd.DataFrame.from_dict(featuredict, orient="index")
     featuredf = featuredf.replace(
         {
@@ -202,7 +202,7 @@ data = data.dropna()
 
 # shuffle within each pid - TAKES SUPER LONG, SERIALIZE
 try:
-    means = pk.load(open(base_path + "files/shuffled_data_meanHS.pk", "rb"))
+    means = pk.load(open(BASE_PATH + "files/shuffled_data_meanHS.pk", "rb"))
 except Exception:
     means = []
     for _ in tqdm(range(100)):
@@ -213,7 +213,7 @@ except Exception:
             shuffled_data2, vf_featurecols, column_name="num_features_same"
         )
         means.append(shuffled_data2.groupby("pid")["num_features_same"].mean().mean())
-    pk.dump(means, open(base_path + "files/shuffled_data_meanHS.pk", "wb"))
+    pk.dump(means, open(BASE_PATH + "files/shuffled_data_meanHS.pk", "wb"))
 
 plt.rcParams["figure.dpi"] = 300
 plt.figure(figsize=(4, 3.5))
@@ -229,7 +229,7 @@ bax.set_ylabel("Number of simulations", labelpad=25)
 bax.axs[0].set_xticks([98.0, 98.5])
 bax.axs[1].set_xticks([105, 106])
 bax.legend(loc="upper right", bbox_to_anchor=(0.981, 1))
-plt.savefig(base_path + "plots/Figure2/2A.pdf", bbox_inches="tight")
+plt.savefig(BASE_PATH + "plots/Figure2/2A.pdf", bbox_inches="tight")
 plt.close()
 
 
@@ -267,7 +267,7 @@ plt.ylabel("Mean num. features same")
 plt.ylim(95, 107)
 plt.xticks(x_labels, fontsize=18)
 plt.yticks(fontsize=18)
-plt.savefig(base_path + "plots/Figure2/2B.pdf", bbox_inches="tight")
+plt.savefig(BASE_PATH + "plots/Figure2/2B.pdf", bbox_inches="tight")
 
 # ## Figure 2C
 
@@ -296,7 +296,7 @@ plt.xticks(ticks=x_positions, labels=bin_labels, rotation=45)
 plt.xlabel("Num. features same")
 plt.ylabel("Mean log(RT)")
 plt.tight_layout()
-plt.savefig(base_path + "plots/Figure2/2C.pdf")
+plt.savefig(BASE_PATH + "plots/Figure2/2C.pdf")
 plt.close()
 # ## Figure 2D
 
@@ -330,18 +330,18 @@ plt.hist(diff_df.mean(axis=0).values, bins=bin_edges, color="lightcoral", alpha=
 plt.ylabel("Num. features")
 plt.xlabel("log(RT) diff. (Switch - Stay)")
 # plt.xlim(-0.5, 0.5)  # optional, keeps plot clean
-plt.savefig(base_path + "plots/Figure2/2D.pdf", bbox_inches="tight")
+plt.savefig(BASE_PATH + "plots/Figure2/2D.pdf", bbox_inches="tight")
 
 
 # # Figure 2E
 
-num_simulations = 100
+NUM_SIMULATIONS = 100
 
 # Uniform
 sum_activity_diff1 = []
 pid_to_count = data.groupby("pid")["response"].count().to_dict()
 unique_responses = data["response"].unique()
-for i in range(num_simulations):
+for i in range(NUM_SIMULATIONS):
     data_simulatedrandom = pd.DataFrame(columns=["pid", "response"])
     for pid, count in pid_to_count.items():
         sampled_responses = np.random.choice(
@@ -363,20 +363,20 @@ for i in range(num_simulations):
     sum_activity_diff1.append(sum_abs_mean_activity_diff)
 
 # Frequency-based
-with open(base_path + "files/freq_abs_log.json", "r") as f:
+with open(BASE_PATH + "files/freq_abs_log.json", "r") as f:
     freq_abs = json.load(f)
 freq_abs = {
     k: v
     for k, v in freq_abs.items()
     if k.replace(" ", "").replace("-", "") in unique_responses
 }
-with open(base_path + "files/response_corrections.json", "r") as f:
+with open(BASE_PATH + "files/response_corrections.json", "r") as f:
     corrections = json.load(f)
 probs = np.array([freq_abs[corrections.get(r, r)] for r in unique_responses])
 probs = np.exp(probs)  # convert from log frequencies
 probs /= probs.sum()  # normalize to sum to 1
 sum_activity_diff2 = []
-for i in range(num_simulations):
+for i in range(NUM_SIMULATIONS):
     data_simulatedrandom = pd.DataFrame(columns=["pid", "response"])
     for pid, count in pid_to_count.items():
         sampled_responses = np.random.choice(
@@ -443,7 +443,7 @@ def add_break(ax_left, ax_right):
 add_break(ax1, ax2)
 add_break(ax2, ax3)
 fig.legend(loc="upper center", bbox_to_anchor=(0.56, 1), ncol=1)
-plt.savefig(base_path + "plots/Figure2/2E.pdf")
+plt.savefig(BASE_PATH + "plots/Figure2/2E.pdf")
 
 
 # ## Figure 2F
@@ -484,4 +484,4 @@ plt.xlim(-0.02, 1.02)
 plt.xticks(fontsize=20)
 plt.yticks([-0.4, -0.2, 0, 0.2, 0.4], fontsize=20)
 plt.ylim(-0.4, 0.4)
-plt.savefig(base_path + "plots/Figure2/2F.pdf", bbox_inches="tight")
+plt.savefig(BASE_PATH + "plots/Figure2/2F.pdf", bbox_inches="tight")

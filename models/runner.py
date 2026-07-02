@@ -39,8 +39,8 @@ from brokenaxes import brokenaxes
 from scipy.stats import ttest_ind
 from tqdm import tqdm
 
-best_model_class = "ours"
-best_model_name = "FreqWeightedHSActivity"
+BEST_MODEL_CLASS = "ours"
+BEST_MODEL_NAME = "FreqWeightedHSActivity"
 
 
 def changeweights(weights, i):
@@ -219,19 +219,19 @@ def run(config):
         try:
             results = pk.load(
                 open(
-                    f"../fits/model_fits/{best_model_name.lower()}_fits_{config['featurestouse']}{suffix}.pk",
+                    f"../fits/model_fits/{BEST_MODEL_NAME.lower()}_fits_{config['featurestouse']}{suffix}.pk",
                     "rb",
                 )
             )
         except Exception:
-            models[best_model_class].models[best_model_name].suffix = suffix
-            models[best_model_class].models[best_model_name].custom_splits = [
-                (models[best_model_class].models[best_model_name].sequences, [])
+            models[BEST_MODEL_CLASS].models[BEST_MODEL_NAME].suffix = suffix
+            models[BEST_MODEL_CLASS].models[BEST_MODEL_NAME].custom_splits = [
+                (models[BEST_MODEL_CLASS].models[BEST_MODEL_NAME].sequences, [])
             ]
-            models[best_model_class].models[best_model_name].fit(customsequences=True)
+            models[BEST_MODEL_CLASS].models[BEST_MODEL_NAME].fit(customsequences=True)
             results = pk.load(
                 open(
-                    f"../fits/model_fits/{best_model_name.lower()}_fits_{config['featurestouse']}{suffix}.pk",
+                    f"../fits/model_fits/{BEST_MODEL_NAME.lower()}_fits_{config['featurestouse']}{suffix}.pk",
                     "rb",
                 )
             )
@@ -240,7 +240,7 @@ def run(config):
     def get_weights():
         results = get_results()
         learned_weights = results["weights_fold1_fulldata"].detach()
-        features = models[best_model_class].models[best_model_name].feature_names
+        features = models[BEST_MODEL_CLASS].models[BEST_MODEL_NAME].feature_names
         learned_weights_freq = learned_weights[0]
         learned_weights_HS = learned_weights[1 : 1 + len(features)]
         learned_weights_Act = learned_weights[1 + len(features) :]
@@ -270,8 +270,8 @@ def run(config):
         results = get_results()
         original_weights = results["weights_fold1_fulldata"].detach()
         best_model_nll = sum(results["trainNLLs_fulldata"])
-        sequences = models[best_model_class].models[best_model_name].sequences
-        num_features = models[best_model_class].models[best_model_name].num_features
+        sequences = models[BEST_MODEL_CLASS].models[BEST_MODEL_NAME].sequences
+        num_features = models[BEST_MODEL_CLASS].models[BEST_MODEL_NAME].num_features
 
         try:
             barplot_HS = pk.load(open("../fits/ablations/ablations_HS.pk", "rb"))
@@ -286,8 +286,8 @@ def run(config):
                     weights[i - 1] = 0
                 totalnll = sum(
                     [
-                        models[best_model_class]
-                        .models[best_model_name]
+                        models[BEST_MODEL_CLASS]
+                        .models[BEST_MODEL_NAME]
                         .get_nll(seq, weights, True)
                         for seq in sequences
                     ]
@@ -311,7 +311,7 @@ def run(config):
         plt.figure(figsize=(15, 8))
         labels = ["with all weights", "no freq"] + [
             f"no HS_{feat}"
-            for feat in models[best_model_class].models[best_model_name].feature_names
+            for feat in models[BEST_MODEL_CLASS].models[BEST_MODEL_NAME].feature_names
         ]
         barplot_HS, labels = zip(*sorted(zip(barplot_HS[2:], labels[2:])))
         barplot_HS = np.array(barplot_HS)
@@ -332,7 +332,7 @@ def run(config):
         plt.figure(figsize=(15, 8))
         labels = ["with all weights", "no freq"] + [
             f"no Activity_{feat}"
-            for feat in models[best_model_class].models[best_model_name].feature_names
+            for feat in models[BEST_MODEL_CLASS].models[BEST_MODEL_NAME].feature_names
         ]
         barplot_Activity, labels = zip(*sorted(zip(barplot_Activity[2:], labels[2:])))
         barplot_Activity = np.array(barplot_Activity)
@@ -362,7 +362,7 @@ def run(config):
         weights = results["weights_fold1_fulldata"].detach()
         train_nll = sum(results["trainNLLs_fulldata"])
 
-        features = models[best_model_class].models[best_model_name].feature_names
+        features = models[BEST_MODEL_CLASS].models[BEST_MODEL_NAME].feature_names
 
         weights_HS = weights[1 : 1 + len(features)]
         weights_Act = weights[1 + len(features) :]
@@ -372,9 +372,7 @@ def run(config):
             - train_nll
         )
         delta_ablations_Act = (
-            np.array(
-                pk.load(open("../fits/ablations/ablations_Activity.pk", "rb"))[2:]
-            )
+            np.array(pk.load(open("../fits/ablations/ablations_Activity.pk", "rb"))[2:])
             - train_nll
         )
 
@@ -450,10 +448,10 @@ def run(config):
         )
         results = get_results()
         weights = results["weights_fold1_fulldata"].detach()
-        RTs = models[best_model_class].models[best_model_name].RTs
-        sequences = models[best_model_class].models[best_model_name].sequences
+        RTs = models[BEST_MODEL_CLASS].models[BEST_MODEL_NAME].RTs
+        sequences = models[BEST_MODEL_CLASS].models[BEST_MODEL_NAME].sequences
 
-        data_metrics = models[best_model_class].models[best_model_name].data_metrics
+        data_metrics = models[BEST_MODEL_CLASS].models[BEST_MODEL_NAME].data_metrics
 
         (
             RTs_forreg,
@@ -477,8 +475,8 @@ def run(config):
 
         for sid, seq in enumerate(sequences):
             logprobs_withoutmasking, nll, freq, HS, activity = (
-                models[best_model_class]
-                .models[best_model_name]
+                models[BEST_MODEL_CLASS]
+                .models[BEST_MODEL_NAME]
                 .get_nll_withoutmasking(seq, weights)
             )
             freq_forreg.extend(freq.cpu().numpy())
@@ -494,8 +492,8 @@ def run(config):
                 (
                     len(seq) - 2,
                     len(
-                        models[best_model_class]
-                        .models[best_model_name]
+                        models[BEST_MODEL_CLASS]
+                        .models[BEST_MODEL_NAME]
                         .unique_responses
                     ),
                 )
@@ -503,8 +501,8 @@ def run(config):
             for i in range(2, len(seq)):
                 visited_responses = np.array(
                     [
-                        models[best_model_class]
-                        .models[best_model_name]
+                        models[BEST_MODEL_CLASS]
+                        .models[BEST_MODEL_NAME]
                         .unique_response_to_index[resp]
                         for resp in seq[: i - 1]
                     ]
@@ -598,8 +596,8 @@ def run(config):
         print("--------------------------------ARS--------------------------------")
         results = get_results()
         weights = results["weights_fold1_fulldata"].detach()
-        sequences = models[best_model_class].models[best_model_name].sequences
-        RTs = models[best_model_class].models[best_model_name].RTs
+        sequences = models[BEST_MODEL_CLASS].models[BEST_MODEL_NAME].sequences
+        RTs = models[BEST_MODEL_CLASS].models[BEST_MODEL_NAME].RTs
 
         def map_type(t):
             """Map 'HS' → 0, 'freq'/'activity'/'global' → 1."""
@@ -669,8 +667,8 @@ def run(config):
             activityeratiosum,
             globaleratiosum,
         ) = (
-            models[best_model_class]
-            .models[best_model_name]
+            models[BEST_MODEL_CLASS]
+            .models[BEST_MODEL_NAME]
             .get_logits_maxlogits(example_seq, weights)
         )
         # temp = list(zip(HSeratiomax, freqeratiomax, activityeratiomax))
@@ -710,8 +708,8 @@ def run(config):
                 activityeratiosum,
                 globaleratiosum,
             ) = (
-                models[best_model_class]
-                .models[best_model_name]
+                models[BEST_MODEL_CLASS]
+                .models[BEST_MODEL_NAME]
                 .get_logits_maxlogits(seq, weights)
             )
             model_probs = np.exp(log_probs.detach().cpu().numpy())
@@ -960,38 +958,38 @@ def run(config):
             try:
                 simseqs = pk.load(
                     open(
-                        f"../simulations/{foldername}/{best_model_name.lower()}_simulations_gpt41_fakeweights_{i}.pk",
+                        f"../simulations/{foldername}/{BEST_MODEL_NAME.lower()}_simulations_gpt41_fakeweights_{i}.pk",
                         "rb",
                     )
                 )
             except Exception:
                 print(f"Modifying weights... {i}")
                 weights = changeweights(original_weights, i)
-                models[best_model_class].models[
-                    best_model_name
+                models[BEST_MODEL_CLASS].models[
+                    BEST_MODEL_NAME
                 ].suffix = f"_fakeweights_{i}"
-                models[best_model_class].models[best_model_name].simulateweights(
+                models[BEST_MODEL_CLASS].models[BEST_MODEL_NAME].simulateweights(
                     weights
                 )
-                simseqs = models[best_model_class].models[best_model_name].simulations
+                simseqs = models[BEST_MODEL_CLASS].models[BEST_MODEL_NAME].simulations
 
             for ssid, ss in enumerate([simseqs[::3], simseqs[1::3], simseqs[2::3]]):
                 suffix2 = f"_paramrecovery_{i}_{ssid + 1}"
                 if not os.path.exists(
-                    f"../fits/{foldername}/{best_model_name.lower()}_fits_gpt41{suffix2}.pk"
+                    f"../fits/{foldername}/{BEST_MODEL_NAME.lower()}_fits_gpt41{suffix2}.pk"
                 ):
-                    print(best_model_class, best_model_name, i, ssid)
-                    models[best_model_class].models[best_model_name].suffix = suffix2
-                    models[best_model_class].models[best_model_name].custom_splits = [
+                    print(BEST_MODEL_CLASS, BEST_MODEL_NAME, i, ssid)
+                    models[BEST_MODEL_CLASS].models[BEST_MODEL_NAME].suffix = suffix2
+                    models[BEST_MODEL_CLASS].models[BEST_MODEL_NAME].custom_splits = [
                         (ss, [])
                     ]
                     start_time = time.time()
-                    models[best_model_class].models[best_model_name].fit(
+                    models[BEST_MODEL_CLASS].models[BEST_MODEL_NAME].fit(
                         customsequences=True, folderinfits=foldername
                     )
                     end_time = time.time()
                     elapsed_time = end_time - start_time
-                    print(f"{best_model_name} completed in {elapsed_time:.2f} seconds")
+                    print(f"{BEST_MODEL_NAME} completed in {elapsed_time:.2f} seconds")
 
 
 if __name__ == "__main__":

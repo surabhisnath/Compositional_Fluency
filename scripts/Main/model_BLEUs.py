@@ -35,7 +35,7 @@ model_name_to_model_print = json.load(
 )
 model_name_to_color = json.load(open("../../files/model_name_to_color.json", "r"))
 
-numsubsamples = 3
+NUM_SUBSAMPLES = 3
 splits = pk.load(open("../../files/splits.pk", "rb"))
 
 sim_bleu_means = {}
@@ -57,7 +57,7 @@ for model_name in model_name_to_model_print:
     for split_ind, (_, test_seqs) in enumerate(splits):
         n_test = n_test_by_split[split_ind]
         references = references_by_split[split_ind]
-        for _ in range(numsubsamples):
+        for _ in range(NUM_SUBSAMPLES):
             forbleu = simulations[sim_ind : sim_ind + n_test]
             sim_ind += n_test
             candidates = [sim[2:] for sim in forbleu]
@@ -72,7 +72,7 @@ for model_name in model_name_to_model_print:
     sim_bleu_means[model_name] = sim_bleu_mean
 
 bleu_values = list(sim_bleu_means.values())
-human_bleu = 0.25 * 0.909 + 0.25 * 0.242 + 0.25 * 0.030 + 0.25 * 0.001
+HUMAN_BLEU = 0.25 * 0.909 + 0.25 * 0.242 + 0.25 * 0.030 + 0.25 * 0.001
 modelnames = [model_name_to_model_print[m] for m in sim_bleu_means]
 colors = [model_name_to_color[m] for m in sim_bleu_means]
 
@@ -80,13 +80,13 @@ plt.figure(figsize=(8, 5))
 x = np.arange(len(bleu_values))
 plt.bar(x, bleu_values, alpha=0.8, color=colors, edgecolor="black", linewidth=1.2)
 plt.xticks(x, modelnames, rotation=90)
-plt.ylim(min(bleu_values) - 0.01, human_bleu + 0.01)
+plt.ylim(min(bleu_values) - 0.01, HUMAN_BLEU + 0.01)
 plt.ylabel("Cross-Validated BLEU Score")
-plt.axhline(y=human_bleu, color="black", linestyle="--", linewidth=1.2)
+plt.axhline(y=HUMAN_BLEU, color="black", linestyle="--", linewidth=1.2)
 plt.text(
     len(bleu_values) - 0.5,
-    human_bleu + 0.005,
-    f"\nHuman BLEU = {human_bleu:.3f}",
+    HUMAN_BLEU + 0.005,
+    f"\nHuman BLEU = {HUMAN_BLEU:.3f}",
     color="black",
     fontsize=10,
     va="top",
