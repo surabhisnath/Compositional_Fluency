@@ -432,7 +432,7 @@ d = 0.015  # size of break slant
 
 
 def add_break(ax_left, ax_right):
-    kwargs = dict(color="k", clip_on=False)
+    kwargs = {"color": "k", "clip_on": False}
     ax_left.plot((1 - d, 1 + d), (-d, +d), transform=ax_left.transAxes, **kwargs)
     ax_right.plot((-d, +d), (-d, +d), transform=ax_right.transAxes, **kwargs)
 
