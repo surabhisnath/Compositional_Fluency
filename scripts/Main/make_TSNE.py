@@ -86,7 +86,7 @@ def make_TSNE(
 
 
 if __name__ == "__main__":
-    featuredict = pk.load(open(f"../../files/features_gpt41.pk", "rb"))
+    featuredict = pk.load(open("../../files/features_gpt41.pk", "rb"))
     feature_names = list(next(iter(featuredict.values())).keys())
     with open("../../files/response_corrections.json", "r") as f:
         corrections = json.load(f)

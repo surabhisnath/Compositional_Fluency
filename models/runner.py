@@ -239,7 +239,7 @@ def run(config):
 
     def get_weights():
         results = get_results()
-        learned_weights = results[f"weights_fold1_fulldata"].detach()
+        learned_weights = results["weights_fold1_fulldata"].detach()
         features = models[best_model_class].models[best_model_name].feature_names
         learned_weights_freq = learned_weights[0]
         learned_weights_HS = learned_weights[1 : 1 + len(features)]
@@ -268,15 +268,15 @@ def run(config):
             "--------------------------------ABLATION STUDY--------------------------------"
         )
         results = get_results()
-        original_weights = results[f"weights_fold1_fulldata"].detach()
-        best_model_nll = sum(results[f"trainNLLs_fulldata"])
+        original_weights = results["weights_fold1_fulldata"].detach()
+        best_model_nll = sum(results["trainNLLs_fulldata"])
         sequences = models[best_model_class].models[best_model_name].sequences
         num_features = models[best_model_class].models[best_model_name].num_features
 
         try:
-            barplot_HS = pk.load(open(f"../fits/ablations/ablations_HS.pk", "rb"))
+            barplot_HS = pk.load(open("../fits/ablations/ablations_HS.pk", "rb"))
             barplot_Activity = pk.load(
-                open(f"../fits/ablations/ablations_Activity.pk", "rb")
+                open("../fits/ablations/ablations_Activity.pk", "rb")
             )
         except:
             totalnlls = []
@@ -303,9 +303,9 @@ def run(config):
                 for i in [0, 1]
                 + list(np.arange(2 + num_features, 2 + 2 * num_features))
             ]
-            pk.dump(barplot_HS, open(f"../fits/ablations/ablations_HS.pk", "wb"))
+            pk.dump(barplot_HS, open("../fits/ablations/ablations_HS.pk", "wb"))
             pk.dump(
-                barplot_Activity, open(f"../fits/ablations/ablations_Activity.pk", "wb")
+                barplot_Activity, open("../fits/ablations/ablations_Activity.pk", "wb")
             )
 
         plt.figure(figsize=(15, 8))
@@ -319,13 +319,13 @@ def run(config):
         plt.bar(x, barplot_HS - best_model_nll, alpha=0.8, color="#9370DB")
         plt.xticks(x, labels, rotation=60, fontsize=6, ha="right")
         plt.ylim(min(barplot_HS - best_model_nll), max(barplot_HS - best_model_nll))
-        plt.ylabel(f"Increase in NLL")
-        plt.title(f"Ablation for HS")
+        plt.ylabel("Increase in NLL")
+        plt.title("Ablation for HS")
         plt.grid(axis="y", linestyle=":", alpha=0.5)
         plt.tight_layout()
         os.makedirs("../plots/Figure4/", exist_ok=True)
-        plt.savefig(f"../plots/Figure4/ablation_HS.png", dpi=300, bbox_inches="tight")
-        print(f"Saved ../plots/Figure4/ablation_HS.png")
+        plt.savefig("../plots/Figure4/ablation_HS.png", dpi=300, bbox_inches="tight")
+        print("Saved ../plots/Figure4/ablation_HS.png")
         print("Top 10 important features for HS:")
         print(labels[-1:-9:-1])
 
@@ -343,14 +343,14 @@ def run(config):
             min(barplot_Activity - best_model_nll),
             max(barplot_Activity - best_model_nll),
         )
-        plt.ylabel(f"Increase in NLL")
-        plt.title(f"Ablation for Activity")
+        plt.ylabel("Increase in NLL")
+        plt.title("Ablation for Activity")
         plt.grid(axis="y", linestyle=":", alpha=0.5)
         plt.tight_layout()
         plt.savefig(
-            f"../plots/Figure4/ablation_Activity.png", dpi=300, bbox_inches="tight"
+            "../plots/Figure4/ablation_Activity.png", dpi=300, bbox_inches="tight"
         )
-        print(f"Saved ../plots/Figure4/ablation_Activity.png")
+        print("Saved ../plots/Figure4/ablation_Activity.png")
         print("Top 10 important features for Activity:")
         print(labels[-1:-9:-1])
 
@@ -359,8 +359,8 @@ def run(config):
             "--------------------------------Visualize weights--------------------------------"
         )
         results = get_results()
-        weights = results[f"weights_fold1_fulldata"].detach()
-        train_nll = sum(results[f"trainNLLs_fulldata"])
+        weights = results["weights_fold1_fulldata"].detach()
+        train_nll = sum(results["trainNLLs_fulldata"])
 
         features = models[best_model_class].models[best_model_name].feature_names
 
@@ -368,12 +368,12 @@ def run(config):
         weights_Act = weights[1 + len(features) :]
 
         delta_ablations_HS = (
-            np.array(pk.load(open(f"../fits/ablations/ablations_HS.pk", "rb"))[2:])
+            np.array(pk.load(open("../fits/ablations/ablations_HS.pk", "rb"))[2:])
             - train_nll
         )
         delta_ablations_Act = (
             np.array(
-                pk.load(open(f"../fits/ablations/ablations_Activity.pk", "rb"))[2:]
+                pk.load(open("../fits/ablations/ablations_Activity.pk", "rb"))[2:]
             )
             - train_nll
         )
@@ -449,7 +449,7 @@ def run(config):
             "--------------------------------RT ANALYSIS--------------------------------"
         )
         results = get_results()
-        weights = results[f"weights_fold1_fulldata"].detach()
+        weights = results["weights_fold1_fulldata"].detach()
         RTs = models[best_model_class].models[best_model_name].RTs
         sequences = models[best_model_class].models[best_model_name].sequences
 
@@ -597,7 +597,7 @@ def run(config):
     if config["ARS"]:
         print("--------------------------------ARS--------------------------------")
         results = get_results()
-        weights = results[f"weights_fold1_fulldata"].detach()
+        weights = results["weights_fold1_fulldata"].detach()
         sequences = models[best_model_class].models[best_model_name].sequences
         RTs = models[best_model_class].models[best_model_name].RTs
 
@@ -954,7 +954,7 @@ def run(config):
         os.makedirs(f"../fits/{foldername}", exist_ok=True)
 
         results = get_results()
-        original_weights = results[f"weights_fold1_fulldata"].detach()
+        original_weights = results["weights_fold1_fulldata"].detach()
 
         for i in range(11):
             try:

@@ -59,7 +59,7 @@ x = np.array([0, 2, 3, 5, 6, 7, 8, 10, 11, 12, 13])
 plt.bar(x, modelnlls, alpha=0.8, color=colors, edgecolor="black", linewidth=1.2)
 plt.xticks(x, modelnames, rotation=45, ha="right", va="top", rotation_mode="anchor")
 plt.ylim(min(modelnlls) - 100, max(modelnlls) + 100)
-plt.ylabel(f"Cross-validated NLL")
+plt.ylabel("Cross-validated NLL")
 plt.tight_layout()
 plt.savefig(
     "../../plots/Supplementary/capacity_constraints.png", dpi=300, transparent=True

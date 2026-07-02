@@ -42,7 +42,7 @@ sim_bleu_means = {}
 references_by_split = [[seq[2:] for seq in test_seqs] for _, test_seqs in splits]
 n_test_by_split = [len(test_seqs) for _, test_seqs in splits]
 
-for model_name in model_name_to_model_print.keys():
+for model_name in model_name_to_model_print:
     sim_path = (
         f"../../simulations/model_simulations/{model_name.lower()}_simulations_gpt41.pk"
     )
@@ -73,8 +73,8 @@ for model_name in model_name_to_model_print.keys():
 
 bleu_values = list(sim_bleu_means.values())
 human_bleu = 0.25 * 0.909 + 0.25 * 0.242 + 0.25 * 0.030 + 0.25 * 0.001
-modelnames = [model_name_to_model_print[m] for m in sim_bleu_means.keys()]
-colors = [model_name_to_color[m] for m in sim_bleu_means.keys()]
+modelnames = [model_name_to_model_print[m] for m in sim_bleu_means]
+colors = [model_name_to_color[m] for m in sim_bleu_means]
 
 plt.figure(figsize=(8, 5))
 x = np.arange(len(bleu_values))

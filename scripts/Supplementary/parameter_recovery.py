@@ -167,9 +167,9 @@ true_weights = []
 
 # Load ground-truth weights (full data + synthetic perturbations).
 results = pk.load(
-    open(f"../../fits/model_fits/freqweightedhsactivity_fits_gpt41_fulldata.pk", "rb")
+    open("../../fits/model_fits/freqweightedhsactivity_fits_gpt41_fulldata.pk", "rb")
 )
-original_weights = results[f"weights_fold1_fulldata"]
+original_weights = results["weights_fold1_fulldata"]
 true_weights.append(original_weights.cpu().numpy())
 
 for i in range(1, 11):
