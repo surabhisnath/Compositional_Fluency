@@ -1,10 +1,55 @@
+# ---- Python bytecode / caches ----
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# ---- Tool caches ----
+.ruff_cache/
+.mypy_cache/
+.dmypy.json
+.pytest_cache/
+.cache/
+.ipynb_checkpoints/
+.coverage
+.coverage.*
+htmlcov/
+
+# ---- Virtual environments ----
+.venv/
+venv/
+env/
+.python-version
+
+# ---- OS / editor junk ----
 .DS_Store
-__pycache__
+._*
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+
+# ---- Secrets / env ----
 .env*
+**/keys.json
+
+# ---- Catch-all: ignore every other hidden (dot) file & dir ----
+# Keep the git-essential and CI dotfiles tracked.
+.*
+!.gitignore
+!.gitattributes
+!.github/
+
+# ---- Project-specific (large data / external code / private) ----
 ./embeddings/*
 ./models
 ./models/*
-**/keys.json
 category-fluency
 forager/
 other_csvs/
