@@ -400,9 +400,6 @@ def run(config):
             delta_ablations_HS, delta_ablations_Act, color="slateblue", alpha=0.6, s=50
         )
 
-        # print(np.mean(np.array(delta_ablations_HS) <= 20618 - train_nll))
-        # print(np.mean(np.array(delta_ablations_Act) <= 20700 - train_nll))
-
         highlight_idx = [
             i
             for i in range(len(features))
@@ -513,9 +510,7 @@ def run(config):
             num = torch.logsumexp(visited, dim=1)  # should be shape len(seq) - 2
 
             logPrej = num
-            # logPrej = num - den
             logPrej_forreg.extend(logPrej.cpu().numpy())
-            # logPrej_forreg.extend(logPrej.cpu().numpy() - np.log(np.arange(1, 1 + len(seq) - 2)))
 
             responses.extend(seq[2:])
             RT = np.log(np.array(RTs[sid][2:]) + 0.001)
@@ -671,9 +666,7 @@ def run(config):
             .models[BEST_MODEL_NAME]
             .get_logits_maxlogits(example_seq, weights)
         )
-        # temp = list(zip(HSeratiomax, freqeratiomax, activityeratiomax))
-        # for a in temp:
-        #     print([float(i) for i in a])
+        
         transition_labels = []
         for hs, freq, act in zip(HSeratiomax, freqeratiomax, activityeratiomax):
             values = [float(hs), float(freq), float(act)]
@@ -805,7 +798,6 @@ def run(config):
         se_probs = np.zeros((2, 2))
         for i in range(2):
             for j in range(2):
-                # I've checked this logic to be true
                 vals = [
                     np.mean(logrt[i][j]) for logrt in per_seq_logrt if logrt[i][j]
                 ]  # not everyone may have all 4 types of transitions in their seq therefore if logrt[i][j] ie if it is not empty
