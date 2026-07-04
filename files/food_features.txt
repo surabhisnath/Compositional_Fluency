@@ -1,0 +1,196 @@
+Is animal-derived
+Is plant-derived
+Contains meat
+Contains poultry
+Contains fish or seafood
+Contains eggs
+Contains dairy
+Contains cheese
+Contains milk
+Contains butter
+Contains cream
+Contains yogurt
+Contains nuts
+Contains peanuts
+Contains tree nuts
+Contains seeds
+Contains grains
+Contains wheat
+Contains barley
+Contains rye
+Contains oats
+Contains corn
+Contains rice
+Contains soy
+Contains beans/legumes
+Contains lentils
+Contains potatoes
+Contains sweet potatoes/yams
+Contains root vegetables
+Contains leafy greens
+Contains fruit
+Contains berries
+Contains citrus fruit
+Contains tropical fruit
+Contains dried fruit
+Contains mushrooms/fungal ingredients
+Contains seaweed
+Contains oil/fats
+Is high in fat
+Is high in protein
+Is high in carbohydrates
+Is high in fiber
+Is high in sugar
+Is high in salt
+Contains added sweetener (sugar, honey, or artificial)
+Is sweet
+Is savory
+Is sour
+Is salty
+Is bitter
+Is spicy
+Has umami flavor
+Is crunchy
+Is creamy
+Is chewy
+Is soft
+Is liquid
+Is gel-like
+Is spreadable
+Is crispy
+Is smooth
+Is sticky
+Is flaky
+Is crumbly
+Is bubbly or carbonated
+Served hot
+Served cold
+Served at room temperature
+Consumed raw
+Cooked by baking
+Cooked by frying
+Cooked by boiling
+Cooked by roasting
+Cooked by grilling
+Cooked by poaching
+Cooked by steaming
+Is deep-fried
+Is pickled
+Is fermented
+Is dried
+Is smoked
+Is canned
+Is frozen
+Is marinated
+Suitable for breakfast
+Suitable for lunch
+Suitable for dinner
+Suitable for snack
+Suitable for dessert
+Suitable for appetizer
+Suitable for main course
+Suitable for side dish
+Suitable for soup/stew
+Used as a condiment
+Used as a dip or spread
+Used as a drink
+Is baked good
+Is a cake or pastry
+Is a bread
+Is a sandwich
+Is a wrap or roll
+Is a pie or tart
+Is pasta or noodle
+Is salad
+Is stew or soup
+Is a burger
+Is a sausage
+Is a dumpling
+Is candy or confection
+Is ice cream or frozen dessert
+Is a beverage
+Is a bar (energy, granola, etc.)
+Is a cereal
+Is a chip or crisp
+Is a pudding or custard
+Is a pancake or waffle
+Is a processed food
+Contains artificial ingredients
+Contains preservatives
+Is gluten-free
+Is lactose-free
+Is free of nuts
+Is vegan
+Is vegetarian
+Is kosher
+Is halal
+Is low-calorie
+Is low-carb
+Is low-fat
+Is low-sodium
+Is high-calorie
+Is low-sugar
+Is ready-to-eat
+Is a finger food
+Is shelf-stable
+Is perishable
+Is red or pink in color
+Is orange or yellow in color
+Is green in color
+Is purple or blue in color
+Is brown in color
+Is white or pale in color
+Is black or dark in color
+Is transparent or translucent
+Is sliced or chopped
+Is ground, mashed, or blended
+Originates in Europe
+Originates in Asia
+Originates in North America
+Originates in Central/South America
+Originates in Africa
+Associated with Italian cuisine
+Associated with French cuisine
+Associated with Chinese cuisine
+Associated with Japanese cuisine
+Associated with Mexican cuisine
+Associated with Middle Eastern cuisine
+Associated with Indian cuisine
+Associated with American cuisine
+Is street food
+Is considered health food
+Is considered junk food
+Contains alcohol
+Contains caffeine
+Contains chocolate
+Contains vanilla
+Contains spices
+Contains herbs
+Contains garlic or onions
+Contains pepper
+Contains gelatin
+Contains shellfish
+Contains soy sauce
+Contains vinegar
+Contains hot sauce or chili
+Contains mayonnaise
+Contains ketchup
+Contains mustard
+Contains tomato
+Contains starchy vegetables
+Contains syrup (e.g. maple, corn)
+Contains processed meat
+Contains cooked ground meat
+Contains raw meat
+Is bite-sized
+Is baby food
+Is a staple food
+Contains probiotics
+Is artificially flavored
+Contains MSG
+Contains whole grain
+Contains refined grain
+Contains fortification/additives (e.g., vitamins/minerals)
+Is typically home-cooked food
+Is typically restaurant food
+Is industrially produced

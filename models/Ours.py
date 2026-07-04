@@ -66,10 +66,15 @@ class Ours(Model):
         self.models = {cls.__name__: cls(self) for cls in subclasses}
 
     def get_features(self):
-        """Load binary feature vectors for each response."""
-        featuredict = pk.load(
-            open(f"../files/features_{self.config['featurestouse']}.pk", "rb")
-        )
+        """Load binary feature vectors for each response.
+
+        Food datasets (lundin) use a separate food feature file
+        (features_<llm>_foods.pk); animal datasets use features_<llm>.pk.
+        """
+        featfile = self.config["featurestouse"]
+        if self.config["dataset"] == "lundin":
+            featfile += "_foods"
+        featuredict = pk.load(open(f"../files/features_{featfile}.pk", "rb"))
         feature_names = list(next(iter(featuredict.values())).keys())
         if self.config["remove_features_that_donot_recover"]:
             parameter_recovery_df = pd.read_csv("../csvs/parameter_recovery.csv")
