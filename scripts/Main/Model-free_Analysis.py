@@ -360,7 +360,7 @@ for i in range(NUM_SIMULATIONS):
     sum_activity_diff1.append(sum_abs_mean_activity_diff)
 
 # Frequency-based
-with open(BASE_PATH + "files/freq_abs_log.json", "r") as f:
+with open(BASE_PATH + "files/hills_freq_abs_log.json", "r") as f:
     freq_abs = json.load(f)
 freq_abs = {
     k: v

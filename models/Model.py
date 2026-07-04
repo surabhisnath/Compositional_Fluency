@@ -169,10 +169,10 @@ class Model:
 
     def get_frequencies(self):
         # https://stackoverflow.com/questions/74951626/python-nlp-google-ngram-api
-        if os.path.exists("../files/freq_abs_log.json"):
-            with open("../files/freq_abs_log.json", "r") as f:
+        if os.path.exists(f"../files/{self.config["dataset"]}_freq_abs_log.json"):
+            with open(f"../files/{self.config["dataset"]}_freq_abs_log.json", "r") as f:
                 freq_abs = json.load(f)
-            with open("../files/freq_rel_log.json", "r") as f:
+            with open(f"../files/{self.config["dataset"]}_freq_rel_log.json", "r") as f:
                 freq_rel = json.load(f)
             freq_abs = {k: v for k, v in freq_abs.items() if k in self.unique_responses}
             freq_rel = {k: v for k, v in freq_rel.items() if k in self.unique_responses}
@@ -182,16 +182,69 @@ class Model:
 
         remaining = [resp for resp in self.unique_responses if resp not in freq_abs]
 
-        if not remaining:
+        # Fetch frequencies for any responses not already cached.
+        if remaining:
+            abs_new, rel_new = self._query_ngram_freq(remaining)
+            freq_abs.update(abs_new)
+            freq_rel.update(rel_new)
+
+        # Corpus-response fallback: np.log10(0) == -inf for tokens absent from the
+        # n-gram corpus (often transliterated / non-English responses). Re-query
+        # those using the canonical corpus_response form and adopt its frequency.
+        resp_to_corpus = (
+            self._response_to_corpus_response()
+            if "corpus_response" in self.data.columns
+            else {}
+        )
+        corpus_query = {}
+        for resp, v in freq_abs.items():
+            if np.isneginf(v):
+                corpus = resp_to_corpus.get(resp)
+                if corpus and corpus != resp:
+                    corpus_query.setdefault(corpus, []).append(resp)
+
+        if not remaining and not corpus_query:
             return freq_abs
 
+        if corpus_query:
+            corpus_abs, corpus_rel = self._query_ngram_freq(list(corpus_query))
+            for corpus, resps in corpus_query.items():
+                for resp in resps:
+                    freq_abs[resp] = corpus_abs.get(corpus, freq_abs[resp])
+                    freq_rel[resp] = corpus_rel.get(corpus, freq_rel[resp])
+
+        freq_abs = dict(
+            sorted(freq_abs.items(), key=lambda item: item[1], reverse=True)
+        )
+        freq_rel = dict(
+            sorted(freq_rel.items(), key=lambda item: item[1], reverse=True)
+        )
+        # Cache results to avoid repeated API calls.
+        with open(f"../files/{self.config["dataset"]}_freq_abs_log.json", "w") as f:
+            json.dump(freq_abs, f, indent=2)
+        with open(f"../files/{self.config["dataset"]}_freq_rel_log.json", "w") as f:
+            json.dump(freq_rel, f, indent=2)
+
+        return freq_abs
+
+    def _query_ngram_freq(self, terms):
+        """Batch-query the n-gram API for `terms`.
+
+        Returns (abs_log, rel_log): term -> log10 total match count
+        (-inf for terms with a zero corpus count).
+        """
+        abs_log = {}
+        rel_log = {}
+        if not terms:
+            return abs_log, rel_log
+
         chunk_size = 100
-        total_chunks = math.ceil(len(remaining) / chunk_size)
+        total_chunks = math.ceil(len(terms) / chunk_size)
         url = "https://api.ngrams.dev/eng/batch"
         headers = {"Content-Type": "application/json"}
 
         for i in range(total_chunks):
-            chunk = remaining[i * chunk_size : (i + 1) * chunk_size]
+            chunk = terms[i * chunk_size : (i + 1) * chunk_size]
             payload = {"flags": "cr", "queries": chunk}
 
             # Batch query the n-grams API for frequency counts.
@@ -210,25 +263,26 @@ class Model:
                     abs_match_counts.append(np.log10(count_abs))
                     rel_match_counts.append(np.log10(count_rel))
 
-                freq_abs.update(dict(zip(chunk, abs_match_counts)))
-                freq_rel.update(dict(zip(chunk, rel_match_counts)))
+                abs_log.update(dict(zip(chunk, abs_match_counts)))
+                rel_log.update(dict(zip(chunk, rel_match_counts)))
 
             else:
                 print("ERROR!!!!")
 
-        freq_abs = dict(
-            sorted(freq_abs.items(), key=lambda item: item[1], reverse=True)
-        )
-        freq_rel = dict(
-            sorted(freq_rel.items(), key=lambda item: item[1], reverse=True)
-        )
-        # Cache results to avoid repeated API calls.
-        with open("../files/freq_abs_log.json", "w") as f:
-            json.dump(freq_abs, f, indent=2)
-        with open("../files/freq_rel_log.json", "w") as f:
-            json.dump(freq_rel, f, indent=2)
+        return abs_log, rel_log
 
-        return freq_abs
+    def _response_to_corpus_response(self):
+        """Map each response (lowercased, matching unique_responses) to its
+        corpus_response, taking the first non-null occurrence per response."""
+        mapping = {}
+        subset = self.data[["response", "corpus_response"]].dropna(
+            subset=["corpus_response"]
+        )
+        for resp, corpus in zip(subset["response"], subset["corpus_response"]):
+            key = str(resp).lower()
+            if key not in mapping:
+                mapping[key] = str(corpus).lower()
+        return mapping
 
     def get_frequencies_hills(self):
         file_path = "../files/datafreqlistlog.txt"
@@ -246,9 +300,10 @@ class Model:
 
         if self.config["representation"] == "clip":
             model = CLIPTextModelWithProjection.from_pretrained(
-                "openai/clip-vit-large-patch14"
+                "openai/clip-vit-large-patch14",
+                local_files_only=True
             ).to(device)
-            tokenizer = AutoTokenizer.from_pretrained("openai/clip-vit-large-patch14")
+            tokenizer = AutoTokenizer.from_pretrained("openai/clip-vit-large-patch14", local_files_only=True)
             inputs = tokenizer(
                 self.unique_responses, padding=True, return_tensors="pt"
             ).to(device)
